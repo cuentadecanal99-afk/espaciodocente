@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secuencias Didácticas EpC | Austin Eco</title>
+    <style>
+        :root {
+            --austin-blue: #1a2e5a;
+            --austin-red: #8b1d22;
+            --green-dark: #1a472a;
+            --border: #e2e8f0;
+            --surface: #f8f9fa;
+            --white: #ffffff;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--surface);
+            color: #333;
+            padding: 32px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 860px;
+            background: var(--white);
+            border-radius: 10px;
+            border-top: 10px solid var(--austin-blue);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 36px;
+        }
+
+        header {
+            border-bottom: 2px solid var(--austin-red);
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+        }
+        header h1 {
+            color: var(--austin-blue);
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        header p { color: #64748b; font-size: 0.8rem; margin-top: 4px; }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--austin-blue);
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            padding: 12px 14px;
+            font-size: 0.92rem;
+            font-family: inherit;
+            color: #1e293b;
+            resize: vertical;
+            line-height: 1.6;
+            transition: border-color 0.15s;
+            min-height: 160px;
+        }
+        textarea:focus { outline: none; border-color: var(--austin-blue); }
+
+        select {
+            width: 100%;
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: #1e293b;
+            background: var(--white);
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        select:focus { border-color: var(--austin-blue); }
+
+        .optional-badge { text-transform: none; font-weight: 400; color: #94a3b8; }
+
+        .campo-edad { max-width: 320px; margin-bottom: 18px; }
+
+        .contexto-pud-panel {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            background: #eef4ff;
+            border: 1px solid #c7d7f5;
+            border-radius: 7px;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            font-size: 0.78rem;
+            color: #1e293b;
+        }
+        .contexto-pud-titulo {
+            font-weight: 800;
+            color: var(--austin-blue);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        button.btn-main {
+            margin-top: 14px;
+            background: var(--austin-red);
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 24px;
+            }
+
+            header h1 {
+                font-size: 1.15rem;
+            }
+
+            .output-wrapper {
+                padding: 18px;
+            }
+
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .btn-copy,
+            button.btn-main {
+                width: 100%;
+                padding: 12px;
+            }
+
+            #output-box {
+                min-height: 280px;
+            }
+        }
+        button.btn-main:hover { background: var(--austin-blue); }
+
+        /* OUTPUT */
+        .output-wrapper {
+            margin-top: 28px;
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 22px;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .output-header label {
+            color: #94a3b8;
+            margin: 0;
+            font-size: 0.72rem;
+        }
+        .btn-copy {
+            background: var(--austin-blue);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-copy:hover { background: #2563eb; }
+
+        #output-box {
+            width: 100%;
+            min-height: 260px;
+            background: #0f172a;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Generador de Secuencias Didácticas</h1>
+        <p>Marco EpC — Harvard Project Zero &nbsp;|&nbsp; Austin Eco Bilingual School</p>
+    </header>
+
+    <div id="contexto-pud-panel" class="contexto-pud-panel"></div>
+
+    <div class="form-group campo-edad">
+        <label id="label-nivel" for="f-nivel">Edad / Grado del alumno <span class="optional-badge">(opcional)</span></label>
+        <select id="f-nivel">
+            <option value="">Sin especificar</option>
+        </select>
+    </div>
+
+    <label for="f-objetivo">Objetivo o tópico a desarrollar</label>
+    <textarea id="f-objetivo" rows="6" placeholder="Describí el objetivo de comprensión, tópico generativo, contenidos clave o performances que querés secuenciar..."></textarea>
+
+    <button class="btn-main" onclick="construirPrompt()">Construir Prompt para Gemini</button>
+
+    <div class="output-wrapper">
+        <div class="output-header">
+            <label>Prompt listo para copiar a Gemini</label>
+            <button class="btn-copy" onclick="copiar()">Copiar Prompt</button>
+        </div>
+        <div id="output-box">Completá el campo de arriba y presioná el botón para generar el prompt...</div>
+    </div>
+
+</div>
+
+<script>
+    // ---- Idioma del objetivo (mismo diccionario que generador-tareas.html / index.html) ----
+
+    function contarSenalesIdioma(texto) {
+        // Espacios al inicio/final para que las señales " el ", " la ", etc.
+        // también matcheen cuando esa palabra es la primera o la última del
+        // texto (si no, "El ciclo del agua" no matcheaba " el " por faltarle
+        // el espacio previo, y un texto corto terminaba en empate 0 a 0).
+        const cuerpo = ' ' + (texto || '').toLowerCase() + ' ';
+
+        const spanishSignals = [
+            ' y ', ' de ', ' la ', ' el ', ' los ', ' las ', ' que ', ' para ', ' por ',
+            ' con ', ' una ', ' unos ', ' alumno', ' docente', ' unidad', ' materia',
+            ' educación', ' enseñanza', ' aprendizaje', ' escuela', ' español'
+        ];
+        const englishSignals = [
+            ' and ', ' of ', ' the ', ' for ', ' with ', ' that ', ' students', ' teachers', ' unit',
+            ' subject', ' learning', ' school', ' class', ' english', ' bilingual', ' global', ' science', ' history'
+        ];
+
+        const countMatches = (terms) => terms.reduce((count, term) => {
+            const regex = new RegExp(term.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
+            return count + ((cuerpo.match(regex) || []).length);
+        }, 0);
+
+        return { es: countMatches(spanishSignals), en: countMatches(englishSignals) };
+    }
+
+    function detectarIdiomaTexto(texto) {
+        const cuerpo = (texto || '').toLowerCase().trim();
+        if (!cuerpo) return 'es';
+        if (/[áéíóúñ¿¡]/.test(cuerpo)) return 'es';
+
+        const { es, en } = contarSenalesIdioma(cuerpo);
+        if (es > en) return 'es';
+        if (en > es) return 'en';
+
+        // Empate a cero: sin tildes ni señales claras de ningún idioma, se
+        // asume castellano por defecto (idioma principal de la escuela).
+        return 'es';
+    }
+
+    function bloqueIdiomaSalida(idioma) {
+        return idioma === 'en'
+            ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nIDIOMA DE SALIDA: INGLÉS\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nToda la secuencia generada (títulos, preguntas, actividades y consignas) debe redactarse íntegramente en inglés, sin importar el idioma de estas instrucciones.`
+            : `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nIDIOMA DE SALIDA: CASTELLANO\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nToda la secuencia generada debe redactarse íntegramente en castellano.`;
+    }
+
+    // ---- Nivel (CEFR si el objetivo está en inglés, edad/grado si está en castellano) ----
+
+    const NIVELES_EN = {
+        A1: { label: 'A1 - Beginner', vocabulario: 'High-frequency, everyday words only (colors, family, routines, concrete objects). Avoid abstract terms.', gramatica: 'Present simple, regular plurals, sentences of 3-6 words. No compound tenses, no subordinate clauses.' },
+        A2: { label: 'A2 - Elementary', vocabulario: 'Everyday vocabulary plus basic academic terms of the topic, always introduced with a concrete example.', gramatica: 'Past simple and "going to" future. Sentences of 6-9 words with simple connectors (and, but, because).' },
+        B1: { label: 'B1 - Intermediate', vocabulario: 'Academic vocabulary of the topic, always introduced in context before being used freely.', gramatica: 'Present perfect, simple subordinate clauses, comparatives/superlatives. Sentences up to 12 words.' },
+        B2: { label: 'B2 - Upper Intermediate', vocabulario: 'Academic and abstract vocabulary, including technical terms of the topic without needing translation.', gramatica: 'Passive voice, cause-effect connectors, conditional clauses. Sentences up to 15-18 words with subordination.' },
+        C1: { label: 'C1 - Advanced', vocabulario: 'Advanced academic vocabulary, nuanced meaning, idiomatic collocations specific to the topic.', gramatica: 'Complex structures (mixed conditionals, passive voice across tenses), extended argumentation with contrast/qualification connectors.' },
+        C2: { label: 'C2 - Proficient', vocabulario: 'Near-native register vocabulary, including connotative nuance and specialized terminology without simplification.', gramatica: 'Full command of complex, varied structures, sophisticated textual cohesion, precise rhetorical argumentation on abstract topics.' }
+    };
+
+    const NIVELES_ES = {
+        '1° Grado Primaria': { label: '1° Grado Primaria', vocabulario: 'Cotidiano y muy concreto; evitar términos abstractos sin explicarlos primero.', gramatica: 'Oraciones de 4 a 6 palabras, una idea por oración, sin subordinadas.' },
+        '2° Grado Primaria': { label: '2° Grado Primaria', vocabulario: 'Cotidiano, con primeras palabras específicas del área siempre acompañadas de un ejemplo concreto.', gramatica: 'Oraciones de 5 a 8 palabras, con conectores simples (y, pero, porque).' },
+        '3° Grado Primaria': { label: '3° Grado Primaria', vocabulario: 'Específico del área, siempre explicado en contexto la primera vez que aparece.', gramatica: 'Oraciones de hasta 10 palabras, primeras subordinadas simples.' },
+        '4° Grado Primaria': { label: '4° Grado Primaria', vocabulario: 'Específico del área con mayor variedad; se pueden introducir sinónimos y familias de palabras.', gramatica: 'Oraciones de hasta 12 palabras, subordinadas simples y conectores de secuencia (primero, luego, finalmente).' },
+        '5° Grado Primaria': { label: '5° Grado Primaria', vocabulario: 'Técnico del área, con primeras nociones de argumentación y comparación.', gramatica: 'Oraciones de hasta 15 palabras, conectores de causa-consecuencia, subordinadas variadas.' },
+        '6° Grado Primaria': { label: '6° Grado Primaria', vocabulario: 'Técnico del área y vocabulario académico de transición a secundaria, con nociones de argumentación.', gramatica: 'Oraciones más complejas, conectores de causa-consecuencia y contraste, primeras estructuras de análisis crítico.' }
+    };
+
+    function tablaNiveles(idioma) {
+        return idioma === 'en' ? NIVELES_EN : NIVELES_ES;
+    }
+
+    function sincronizarSelectorNivel(idioma) {
+        const select = document.getElementById('f-nivel');
+        const label = document.getElementById('label-nivel');
+        if (!select || !label) return;
+        if (select.dataset.idioma === idioma) return;
+
+        select.dataset.idioma = idioma;
+        select.innerHTML = '<option value="">Sin especificar</option>';
+        Object.entries(tablaNiveles(idioma)).forEach(([valor, info]) => {
+            const opt = document.createElement('option');
+            opt.value = valor;
+            opt.textContent = info.label;
+            select.appendChild(opt);
+        });
+        select.value = '';
+        delete select.dataset.autofilled;
+
+        label.innerHTML = idioma === 'en'
+            ? 'Nivel de inglés (CEFR) <span class="optional-badge">(opcional)</span>'
+            : 'Edad / Grado del alumno <span class="optional-badge">(opcional)</span>';
+    }
+
+    function bloqueNivel(nivel, idioma) {
+        const info = tablaNiveles(idioma)[nivel];
+        if (!info) return null;
+        return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCALIBRACIÓN POR NIVEL (${info.label})\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n- VOCABULARIO: ${info.vocabulario}\n- GRAMÁTICA/SINTAXIS: ${info.gramatica}\nAjustá la complejidad de las actividades, consignas y preguntas guía de los 5 pasos a este nivel.`;
+    }
+
+    function escapeHtml(value = '') {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // ---- Contexto del PUD activo (recibido por postMessage desde index.html) ----
+
+    window.contextoPUD = null;
+
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'secuencias:ready' }, '*');
+    }
+
+    window.addEventListener('message', (event) => {
+        const data = event.data;
+        if (!data || data.type !== 'pud-workspace:contexto') return;
+        aplicarContextoPUD(data);
+    });
+
+    function aplicarContextoPUD(data) {
+        window.contextoPUD = data;
+
+        const selectNivel = document.getElementById('f-nivel');
+        if (data.grado && selectNivel && selectNivel.dataset.idioma === 'es'
+            && (selectNivel.value === '' || selectNivel.dataset.autofilled === 'true')) {
+            const opcion = Array.from(selectNivel.options).find(o => o.value === data.grado.trim());
+            if (opcion) {
+                selectNivel.value = opcion.value;
+                selectNivel.dataset.autofilled = 'true';
+            }
+        }
+
+        renderContextoPUD(data);
+    }
+
+    function renderContextoPUD(data) {
+        const panel = document.getElementById('contexto-pud-panel');
+        if (!panel) return;
+
+        const tieneAlgo = data.materia || data.unitName || data.topic || (data.objetivos && data.objetivos.length > 0);
+        if (!tieneAlgo) { panel.style.display = 'none'; return; }
+
+        const partes = [`<p class="contexto-pud-titulo">📎 Contexto tomado del PUD activo</p>`];
+        if (data.materia) partes.push(`<span><strong>Materia:</strong> ${escapeHtml(data.materia)}</span>`);
+        if (data.unitName) partes.push(`<span><strong>Unidad:</strong> ${escapeHtml(data.unitName)}</span>`);
+        if (data.topic && data.topic !== data.unitName) partes.push(`<span><strong>Tema PUD:</strong> ${escapeHtml(data.topic)}</span>`);
+        if (data.objetivos && data.objetivos.length > 0) {
+            partes.push(`<span><strong>Objetivos:</strong> ${data.objetivos.map(escapeHtml).join(' · ')}</span>`);
+        }
+
+        panel.innerHTML = partes.join('');
+        panel.style.display = 'flex';
+    }
+
+    function bloqueContextoPUD(contexto) {
+        if (!contexto) return null;
+        const lineas = [];
+        if (contexto.materia) lineas.push(`- Materia/Área: ${contexto.materia}`);
+        if (contexto.unitName) lineas.push(`- Unidad didáctica: ${contexto.unitName}`);
+        if (contexto.topic && contexto.topic !== contexto.unitName) lineas.push(`- Tópico de la PUD: ${contexto.topic}`);
+        if (contexto.objetivos && contexto.objetivos.length > 0) {
+            lineas.push(`- Objetivos de comprensión de la unidad: ${contexto.objetivos.join(' | ')}`);
+        }
+        if (lineas.length === 0) return null;
+        return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCONTEXTO DE LA UNIDAD DIDÁCTICA (PUD) ACTIVA\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTené en cuenta este contexto para que la secuencia sea coherente con la unidad en curso:\n${lineas.join('\n')}`;
+    }
+
+    const campoObjetivo = document.getElementById('f-objetivo');
+    sincronizarSelectorNivel(detectarIdiomaTexto(campoObjetivo.value));
+    campoObjetivo.addEventListener('input', () => {
+        sincronizarSelectorNivel(detectarIdiomaTexto(campoObjetivo.value));
+    });
+
+    // Si el docente toca el selector a mano, esa elección ya no es "autofill":
+    // sin este flag, la próxima vez que llega el contexto del PUD (ej. al
+    // volver a esta pestaña) pisaba silenciosamente la elección manual.
+    document.getElementById('f-nivel').addEventListener('change', function () {
+        delete this.dataset.autofilled;
+    });
+
+    function construirPrompt() {
+        const objetivo = campoObjetivo.value.trim();
+        if (!objetivo) { alert("Ingresá un objetivo o tópico."); return; }
+
+        const idioma = detectarIdiomaTexto(objetivo);
+        const nivel = document.getElementById('f-nivel').value;
+        const metaFrase = idioma === 'en' ? 'Students will develop understanding about...' : 'Los estudiantes desarrollarán comprensión sobre...';
+
+        const extras = [bloqueContextoPUD(window.contextoPUD), bloqueIdiomaSalida(idioma), bloqueNivel(nivel, idioma)]
+            .filter(Boolean)
+            .map(bloque => `\n\n${bloque}`)
+            .join('');
+
+        const prompt = `Actúa como un experto en EpC (Enseñanza para la Comprensión, Harvard Project Zero) con experiencia en planificación didáctica para educación bilingüe.
+
+Tu tarea es generar una SECUENCIA DIDÁCTICA estructurada en exactamente 5 pasos según el marco EpC, a partir del siguiente objetivo o tópico:
+
+---
+${objetivo}
+---${extras}
+
+ESTRUCTURA OBLIGATORIA DE LOS 5 PASOS:
+
+PASO 1 — EXPLORACIÓN (Tópico Generativo)
+Activación de saberes previos y conexión con la experiencia del alumno. El tópico debe ser genuinamente interesante, central a la disciplina y accesible. Incluí una pregunta generativa potente que abra el pensamiento.
+
+PASO 2 — INVESTIGACIÓN GUIADA (Metas de Comprensión en acción)
+Profundización conceptual con andamiaje docente. Las actividades deben apuntar directamente a las metas de comprensión. El alumno no solo recibe información: construye comprensión con apoyo estructurado.
+
+PASO 3 — SÍNTESIS Y CONEXIÓN (Transferencia)
+Integración de lo aprendido. El alumno conecta los nuevos conceptos con otros contextos, disciplinas o situaciones reales. Actividades de síntesis visible (mapas, discusiones, comparaciones).
+
+PASO 4 — PRODUCCIÓN (Desempeño de Comprensión visible)
+El alumno demuestra su comprensión a través de un producto auténtico y concreto. Debe ser un desempeño real, no una prueba tradicional. Público o propósito real siempre que sea posible.
+
+PASO 5 — EVALUACIÓN FINAL (Valoración Continua + Metacognición)
+Reflexión sobre el propio aprendizaje. Criterios de evaluación compartidos con el alumno. Cierre que consolida la comprensión y abre nuevas preguntas.
+
+FORMATO DE ENTREGA:
+Para cada paso incluí:
+- Nombre y subtítulo descriptivo
+- Duración estimada
+- Pregunta guía del paso
+- 2 a 3 actividades concretas con sugerencia para el docente
+- Recursos necesarios
+- Cómo se evalúa la comprensión en ese paso
+- Conexión explícita con el marco EpC
+
+Al inicio del documento indicá:
+- Título de la secuencia
+- Meta de comprensión central (una oración que comience con "${metaFrase}")
+
+El output debe estar listo para usar en el aula, con lenguaje claro y preciso. No agregues introducciones ni aclaraciones metodológicas dirigidas al docente fuera del formato solicitado.`;
+
+        document.getElementById('output-box').textContent = prompt;
+    }
+
+    async function copiar() {
+        const box = document.getElementById('output-box');
+        const btn = document.querySelector('.btn-copy');
+        const texto = box.textContent;
+
+        if (texto.startsWith("Completá")) { alert("Primero generá el prompt."); return; }
+
+        try {
+            await navigator.clipboard.writeText(texto);
+        } catch {
+            const ta = document.createElement('textarea');
+            ta.value = texto;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+
+        const orig = btn.textContent;
+        btn.textContent = "¡Copiado!";
+        btn.style.background = "#16a34a";
+        setTimeout(() => { btn.textContent = orig; btn.style.background = ""; }, 1500);
+    }
+</script>
+</body>
+</html>
