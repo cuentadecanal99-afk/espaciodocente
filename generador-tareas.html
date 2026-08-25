@@ -365,14 +365,26 @@
         '3° Grado Primaria': { label: '3° Grado Primaria', vocabulario: 'Específico del área, siempre explicado en contexto la primera vez que aparece.', gramatica: 'Oraciones de hasta 10 palabras, primeras subordinadas simples.' },
         '4° Grado Primaria': { label: '4° Grado Primaria', vocabulario: 'Específico del área con mayor variedad; se pueden introducir sinónimos y familias de palabras.', gramatica: 'Oraciones de hasta 12 palabras, subordinadas simples y conectores de secuencia (primero, luego, finalmente).' },
         '5° Grado Primaria': { label: '5° Grado Primaria', vocabulario: 'Técnico del área, con primeras nociones de argumentación y comparación.', gramatica: 'Oraciones de hasta 15 palabras, conectores de causa-consecuencia, subordinadas variadas.' },
-        '6° Grado Primaria': { label: '6° Grado Primaria', vocabulario: 'Técnico del área y vocabulario académico de transición a secundaria, con nociones de argumentación.', gramatica: 'Oraciones más complejas, conectores de causa-consecuencia y contraste, primeras estructuras de análisis crítico.' }
+        '6° Grado Primaria': { label: '6° Grado Primaria', vocabulario: 'Técnico del área y vocabulario académico de transición a secundaria, con nociones de argumentación.', gramatica: 'Oraciones más complejas, conectores de causa-consecuencia y contraste, primeras estructuras de análisis crítico.' },
+        '1° Año Secundaria': { label: '1° Año Secundaria', vocabulario: 'Técnico del área, introducido en contexto pero ya sin simplificaciones excesivas; primeras nociones de terminología disciplinar.', gramatica: 'Oraciones de hasta 18 palabras, subordinadas variadas, conectores de causa-consecuencia y contraste.' },
+        '2° Año Secundaria': { label: '2° Año Secundaria', vocabulario: 'Técnico consolidado del área, con primeros términos abstractos propios de la disciplina.', gramatica: 'Subordinadas múltiples, voz pasiva, conectores de consecuencia y concesión; inicio de argumentación con evidencia.' },
+        '3° Año Secundaria': { label: '3° Año Secundaria', vocabulario: 'Académico y técnico específico, con matices de significado entre términos relacionados.', gramatica: 'Estructuras complejas con varias cláusulas, nexos de contraste y condición; argumentación con postura propia.' },
+        '4° Año Secundaria': { label: '4° Año Secundaria', vocabulario: 'Especializado del área, incluyendo terminología de uso profesional o académico.', gramatica: 'Registro formal sostenido, estructuras condicionales y comparativas complejas, síntesis de múltiples fuentes.' },
+        '5° Año Secundaria': { label: '5° Año Secundaria', vocabulario: 'Técnico-académico de nivel preuniversitario, con precisión terminológica exigida.', gramatica: 'Argumentación compleja y sostenida, con matización, contraargumentación y uso de evidencia para sustentar posturas.' },
+        '6° Año Secundaria': { label: '6° Año Secundaria', vocabulario: 'Académico de transición a nivel universitario, con manejo autónomo de terminología especializada.', gramatica: 'Pensamiento crítico expresado con estructuras sofisticadas, argumentación multicausal y análisis con autonomía total.' }
     };
 
     // Reduce el nivel fino elegido a una de las 3 bandas que ya usan las
     // secciones del prompt (requisitos de extensión/complejidad por sección).
     const TIER_POR_NIVEL = {
         en: { A1: 'inicial', A2: 'inicial', B1: 'medio', B2: 'medio', C1: 'avanzado', C2: 'avanzado' },
-        es: { '1° Grado Primaria': 'inicial', '2° Grado Primaria': 'inicial', '3° Grado Primaria': 'medio', '4° Grado Primaria': 'medio', '5° Grado Primaria': 'avanzado', '6° Grado Primaria': 'avanzado' }
+        es: {
+            '1° Grado Primaria': 'inicial', '2° Grado Primaria': 'inicial', '3° Grado Primaria': 'medio', '4° Grado Primaria': 'medio', '5° Grado Primaria': 'avanzado', '6° Grado Primaria': 'avanzado',
+            // Secundaria ya arranca por encima del techo de "avanzado" de primaria;
+            // no hay un 4° tier de sección, así que los 6 años usan el mismo techo.
+            '1° Año Secundaria': 'avanzado', '2° Año Secundaria': 'avanzado', '3° Año Secundaria': 'avanzado',
+            '4° Año Secundaria': 'avanzado', '5° Año Secundaria': 'avanzado', '6° Año Secundaria': 'avanzado'
+        }
     };
 
     function tablaNiveles(idioma) {

@@ -1564,11 +1564,17 @@
             alert('Contraseña actualizada correctamente. Ya podés usar el panel.');
         }
 
+        // Id del usuario para el que ya se cargó el panel (permisos + vista de
+        // grados). Sirve para distinguir un login real de los re-chequeos de
+        // sesión que Supabase dispara solo, sin acción del coordinador.
+        window.usuarioAppCargadaId = null;
+
         async function inicializarSesionAuth() {
             const { data: { session } } = await _supabase.auth.getSession();
             window.authUser = session?.user || null;
             actualizarUIAuth();
             if (window.authUser) {
+                window.usuarioAppCargadaId = window.authUser.id;
                 await mostrarApp();
             } else {
                 mostrarGate();
@@ -1576,17 +1582,29 @@
         }
 
         _supabase.auth.onAuthStateChange((event, session) => {
-            window.authUser = session?.user || null;
+            const nuevoUser = session?.user || null;
+            window.authUser = nuevoUser;
             actualizarUIAuth();
             if (event === 'PASSWORD_RECOVERY') {
                 manejarRecuperacionPassword();
                 return;
             }
-            if (window.authUser) {
-                mostrarApp();
-            } else if (event === 'SIGNED_OUT') {
+            if (event === 'SIGNED_OUT') {
+                window.usuarioAppCargadaId = null;
                 mostrarGate();
+                return;
             }
+            if (!nuevoUser) return;
+
+            // Supabase dispara TOKEN_REFRESHED (y a veces SIGNED_IN de nuevo) cada
+            // vez que la pestaña recupera el foco, aunque sea el mismo usuario ya
+            // logueado. Sin este filtro, mostrarApp() volvía a pisar la vista con
+            // "grados" cada vez que el coordinador volvía de mirar otra ventana,
+            // cerrando el PUD que tenía abierto.
+            if (nuevoUser.id === window.usuarioAppCargadaId) return;
+
+            window.usuarioAppCargadaId = nuevoUser.id;
+            mostrarApp();
         });
 
         inicializarSesionAuth();

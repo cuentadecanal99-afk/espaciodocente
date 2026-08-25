@@ -1803,7 +1803,7 @@
         }
 
         const renderAustinPUD = (data) => {
-            const hilosHtml = data.throughlines.map(h => `${h}<br>`).join('');
+            const hilosHtml = data.throughlines.map((h, i) => `<strong>${i + 1}.</strong> ${h}<br>`).join('');
             const metasHtml = data.understanding_goals.map(ug => `
                 <tr>
                     <td style="border: 1pt solid #000; padding: 10px; width: 55%;"><strong>${ug.id}:</strong> ${ug.text}</td>
@@ -1911,7 +1911,13 @@
             '3° Grado Primaria': { label: '3° Grado Primaria', vocabulario: 'Específico del área, siempre explicado en contexto la primera vez que aparece.', gramatica: 'Oraciones de hasta 10 palabras, primeras subordinadas simples.' },
             '4° Grado Primaria': { label: '4° Grado Primaria', vocabulario: 'Específico del área con mayor variedad; se pueden introducir sinónimos y familias de palabras.', gramatica: 'Oraciones de hasta 12 palabras, subordinadas simples y conectores de secuencia (primero, luego, finalmente).' },
             '5° Grado Primaria': { label: '5° Grado Primaria', vocabulario: 'Técnico del área, con primeras nociones de argumentación y comparación.', gramatica: 'Oraciones de hasta 15 palabras, conectores de causa-consecuencia, subordinadas variadas.' },
-            '6° Grado Primaria': { label: '6° Grado Primaria', vocabulario: 'Técnico del área y vocabulario académico de transición a secundaria, con nociones de argumentación.', gramatica: 'Oraciones más complejas, conectores de causa-consecuencia y contraste, primeras estructuras de análisis crítico.' }
+            '6° Grado Primaria': { label: '6° Grado Primaria', vocabulario: 'Técnico del área y vocabulario académico de transición a secundaria, con nociones de argumentación.', gramatica: 'Oraciones más complejas, conectores de causa-consecuencia y contraste, primeras estructuras de análisis crítico.' },
+            '1° Año Secundaria': { label: '1° Año Secundaria', vocabulario: 'Técnico del área, introducido en contexto pero ya sin simplificaciones excesivas; primeras nociones de terminología disciplinar.', gramatica: 'Oraciones de hasta 18 palabras, subordinadas variadas, conectores de causa-consecuencia y contraste.' },
+            '2° Año Secundaria': { label: '2° Año Secundaria', vocabulario: 'Técnico consolidado del área, con primeros términos abstractos propios de la disciplina.', gramatica: 'Subordinadas múltiples, voz pasiva, conectores de consecuencia y concesión; inicio de argumentación con evidencia.' },
+            '3° Año Secundaria': { label: '3° Año Secundaria', vocabulario: 'Académico y técnico específico, con matices de significado entre términos relacionados.', gramatica: 'Estructuras complejas con varias cláusulas, nexos de contraste y condición; argumentación con postura propia.' },
+            '4° Año Secundaria': { label: '4° Año Secundaria', vocabulario: 'Especializado del área, incluyendo terminología de uso profesional o académico.', gramatica: 'Registro formal sostenido, estructuras condicionales y comparativas complejas, síntesis de múltiples fuentes.' },
+            '5° Año Secundaria': { label: '5° Año Secundaria', vocabulario: 'Técnico-académico de nivel preuniversitario, con precisión terminológica exigida.', gramatica: 'Argumentación compleja y sostenida, con matización, contraargumentación y uso de evidencia para sustentar posturas.' },
+            '6° Año Secundaria': { label: '6° Año Secundaria', vocabulario: 'Académico de transición a nivel universitario, con manejo autónomo de terminología especializada.', gramatica: 'Pensamiento crítico expresado con estructuras sofisticadas, argumentación multicausal y análisis con autonomía total.' }
         };
 
         function bloqueCalibracionNivel(idioma, datosUsuario) {
@@ -2013,7 +2019,7 @@ DATOS DE ENTRADA:
 ESTRUCTURA JSON REQUERIDA DE SALIDA:
 {
   "meta": { "year": "${datosUsuario.year}", "section": "", "subject": "${datosUsuario.subject}" },
-  "topic": "Título optimizado",
+  "topic": "Tópico generativo corto y llamativo (máx. 6 palabras)",
   "throughlines": [ "Pregunta 1?", "Pregunta 2?", "Pregunta 3?", "Pregunta 4?" ],
   "understanding_goals": [
     { "id": "UG 1", "text": "${ejemploMeta}", "dimension": "KNOWLEDGE", "question": "Pregunta guía" },
@@ -2022,11 +2028,31 @@ ESTRUCTURA JSON REQUERIDA DE SALIDA:
     { "id": "UG 4", "text": "${ejemploMeta}", "dimension": "COMMUNICATION", "question": "Pregunta guía" }
   ],
   "performances": [
-    { "title": "Actividad 1", "description": "Detalle", "assessment": "Evaluación", "ug": "1", "upt": "GI", "mi": "L", "td": "3" }
+    { "title": "Actividad 1", "description": "Detalle", "assessment": "Formal / Escrita / Docente", "ug": "1", "upt": "GI", "mi": "L", "td": "3" }
   ],
   "final_project": { "title": "Proyecto Final", "description": "Detalle", "mi": "L", "td": "7" }
 }
-Genera exactamente 4 'throughlines' relevantes y siempre completa 4 aunque el input sea limitado. Genera exactamente 4 'understanding_goals' (repartiendo dimensiones) y al menos 4 'performances' articuladas.`;
+Genera exactamente 4 'throughlines' relevantes y siempre completa 4 aunque el input sea limitado. Genera exactamente 4 'understanding_goals' (repartiendo dimensiones) y al menos 4 'performances' articuladas.
+El 'topic' (tópico generativo) debe ser un título breve y llamativo, tipo titular: máximo 6 palabras, sin puntos ni subordinadas. Nada de oraciones descriptivas extensas ni explicativas.
+El campo 'assessment' de cada performance NO debe redactarse como explicación. Debe responder únicamente combinando estas categorías fijas, separadas por " / ", eligiendo una opción de cada grupo:
+- Formal / Informal
+- Oral / Escrita / Gestual
+- Docente / Co-valoración / Autovaloración
+Ejemplo válido: "Formal / Escrita / Docente". No agregues texto adicional, justificación ni descripción del instrumento.
+
+CRITERIOS PARA EL 'final_project' (Proyecto Final):
+El objetivo es la CALIDAD del proyecto, no una reformulación decorativa. Mantené el tema central, los objetivos de aprendizaje, las habilidades a desarrollar y la relación con la unidad trabajada. Aplicá estos lineamientos al redactar 'title' y 'description':
+1. Propósito auténtico: el estudiante debe hacer algo con una razón real, no solo demostrar que leyó o responder preguntas.
+2. Pensamiento visible: el resultado debe mostrar cómo el estudiante interpreta, compara, decide, resuelve, justifica o conecta ideas. Si una rutina de Visible Thinking (Project Zero) aporta valor real, incorporala de forma natural, sin nombrarla explícitamente como "rutina".
+3. Inquiry: partí de una pregunta, problema, desafío o decisión que invite a pensar, en vez de reproducir información.
+4. Producto final claro: un solo resultado concreto y realizable, no múltiples entregables ni un proyecto excesivamente abierto.
+5. Coherencia: relacionado directamente con lo enseñado en la unidad, sin agregar habilidades sin conexión clara.
+6. Edad y nivel: realista para la edad y el nivel lingüístico del grupo. La complejidad debe estar en el pensamiento, no en la cantidad de pasos, materiales o lenguaje académico.
+7. Low-prep: realizable con recursos habituales del aula (el texto trabajado, cuaderno, pizarrón, materiales simples), sin preparación docente extensa.
+8. Simplicidad: sin etapas, fases ni componentes innecesarios.
+9. Lenguaje natural, claro y profesional, sin vocabulario pedagógico técnico ni tono de documento universitario o de Instructional Design.
+EVITÁ que el proyecto se convierta automáticamente en portfolio, exposición, campaña, dossier, producto multimodal, presentación, producto digital o con múltiples entregables: elegí el formato que mejor responda a los objetivos de ESTE proyecto puntual.
+El 'description' debe ser un párrafo breve que indique qué harán los estudiantes, cuál es el resultado final concreto, y cómo se hace visible su pensamiento en el proceso. No es necesaria una sección aparte para esto: integralo en el mismo párrafo.`;
         }
 
         function generarPromptEstructurado() {
@@ -2133,10 +2159,24 @@ Genera exactamente 4 'throughlines' relevantes y siempre completa 4 aunque el in
             }
         };
 
+        // El preview es editable (correcciones manuales sobre el PUD ya
+        // renderizado): pegar ahí debe insertar texto plano en el cursor, no
+        // intentar reinterpretar todo el contenido como un JSON nuevo. El
+        // pegado de JSON para generar el PUD tiene su propio cuadro dedicado
+        // (#json-paster) más abajo.
         preview.addEventListener('paste', (e) => {
             e.preventDefault();
             const text = e.clipboardData.getData('text/plain');
-            procesarTextoYRenderizar(text);
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            const nodo = document.createTextNode(text);
+            range.insertNode(nodo);
+            range.setStartAfter(nodo);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
         });
 
         pasteZone.addEventListener('input', (e) => {
