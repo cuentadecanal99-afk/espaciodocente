@@ -1,0 +1,30 @@
+# Mantiene activo el proyecto de Supabase (plan gratis).
+# Supabase pausa los proyectos gratuitos tras 7 días sin actividad; esta
+# tarea hace una consulta de solo lectura todos los días para evitarlo.
+#
+# Usa la clave anónima (pública): es la misma que ya está en index.html y
+# solo puede leer lo que las políticas RLS permiten a cualquier visitante.
+# Si cambia la clave en index.html, actualizala también acá.
+#
+# Para correrla a mano: pestaña Actions del repo > "Supabase keep-alive" > Run workflow.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # todos los días, 12:00 UTC (9:00 en Argentina)
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_URL: https://kretfnbddhbosacfgdup.supabase.co
+      SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtyZXRmbmJkZGhib3NhY2ZnZHVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0Mjk3MTcsImV4cCI6MjA4NzAwNTcxN30.P0HLqGab3tB5WdsVGYKXEyK572JvthHYFg7iu3MJpgo
+    steps:
+      - name: Consulta de solo lectura a la base
+        run: |
+          estado=$(curl -s -o respuesta.txt -w "%{http_code}" --retry 3 --retry-delay 10             "$SUPABASE_URL/rest/v1/hilos_conductores?select=id&limit=1"             -H "apikey: $SUPABASE_ANON_KEY"             -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "Respuesta de Supabase: HTTP $estado"
+          # Si falla, el workflow queda en rojo y GitHub avisa por mail.
+          if [ "$estado" != "200" ]; then cat respuesta.txt; exit 1; fi

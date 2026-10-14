@@ -1,0 +1,21 @@
+# Pruebas automáticas de Espacio Docente: corren con cada push y en cada
+# pull request. Si fallan, el commit queda con una cruz roja en GitHub.
+# Detalle de qué se prueba: .github/scripts/pruebas.mjs
+name: Pruebas
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Correr pruebas
+        run: node .github/scripts/pruebas.mjs
