@@ -18,6 +18,10 @@
 --
 -- 4. RÚBRICAS: tabla para guardar la rúbrica de cada PUD (una por PUD y
 --    desempeño, por docente). Cada docente ve y edita solo las suyas.
+--
+-- 5. ALTAS SIN MAILS: se apaga la invitación automática de coordinadores y
+--    se confirman las cuentas autorizadas que quedaron pendientes. Va junto
+--    con apagar Authentication → Sign In / Providers → Email → "Confirm email".
 -- =========================================================
 
 BEGIN;
@@ -132,6 +136,27 @@ CREATE POLICY rubricas_update_own ON public.rubricas
 DROP POLICY IF EXISTS rubricas_delete_own ON public.rubricas;
 CREATE POLICY rubricas_delete_own ON public.rubricas
   FOR DELETE TO authenticated USING (user_id = auth.uid());
+
+-- ---------- 5. Altas sin mails (requiere "Confirm email" apagado) ----------
+-- Cada persona se registra sola con su correo y entra en el momento; no se
+-- manda ningún mail. Por eso:
+-- a) Se apaga la invitación automática de coordinadores: sin servidor de
+--    mail, podía dejar la cuenta creada pero sin contraseña, y entonces la
+--    persona ya no podía registrarse. Ahora Dirección la da de alta en el
+--    panel y la persona se registra en Espacio Docente con ese correo.
+DROP TRIGGER IF EXISTS trg_invitar_coordinador ON public.coordinadores;
+
+-- b) Se confirman las cuentas autorizadas que quedaron esperando el mail de
+--    confirmación (registros de antes de apagar "Confirm email").
+UPDATE auth.users u
+SET email_confirmed_at = now()
+WHERE u.email_confirmed_at IS NULL
+  AND (
+    (split_part(lower(u.email), '@', 2) = 'austinebs-ah.edu.ar' AND lower(u.email) NOT LIKE 'st.%')
+    OR EXISTS (SELECT 1 FROM public.allowed_emails a WHERE lower(a.email) = lower(u.email))
+    OR EXISTS (SELECT 1 FROM public.coordinadores c WHERE lower(c.email) = lower(u.email))
+    OR EXISTS (SELECT 1 FROM public.directores d WHERE lower(d.email) = lower(u.email))
+  );
 
 COMMIT;
 
