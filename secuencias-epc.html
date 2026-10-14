@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secuencias Didácticas EpC | Austin Eco</title>
+    <link rel="icon" type="image/jpeg" href="austin-eco-bilingual-school-campana-argentina.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="austin-tokens.css">
     <style>
         :root {
-            --austin-blue: #1a2e5a;
-            --austin-red: #8b1d22;
-            --green-dark: #1a472a;
-            --border: #e2e8f0;
-            --surface: #f8f9fa;
+            --austin-blue: var(--austin-petroleo);
+            --austin-red: var(--austin-naranja);
+            --green-dark: var(--austin-lima-oscuro);
+            --border: var(--austin-borde);
+            --surface: var(--austin-fondo);
             --white: #ffffff;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: var(--austin-fuente);
             background: var(--surface);
-            color: #333;
+            color: var(--austin-texto);
             padding: 32px 20px;
             display: flex;
             justify-content: center;
@@ -30,13 +34,13 @@
             max-width: 860px;
             background: var(--white);
             border-radius: 10px;
-            border-top: 10px solid var(--austin-blue);
+            border-top: 4px solid var(--austin-lima);
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
             padding: 36px;
         }
 
         header {
-            border-bottom: 2px solid var(--austin-red);
+            border-bottom: 1px solid var(--austin-borde);
             margin-bottom: 24px;
             padding-bottom: 14px;
         }
@@ -44,16 +48,14 @@
             color: var(--austin-blue);
             font-size: 1.3rem;
             font-weight: 800;
-            text-transform: uppercase;
             margin: 0;
         }
-        header p { color: #64748b; font-size: 0.8rem; margin-top: 4px; }
+        header p { color: var(--austin-texto-suave); font-size: 0.8rem; margin-top: 4px; }
 
         label {
             display: block;
             font-weight: 700;
             font-size: 0.72rem;
-            text-transform: uppercase;
             letter-spacing: 0.4px;
             color: var(--austin-blue);
             margin-bottom: 8px;
@@ -66,7 +68,7 @@
             padding: 12px 14px;
             font-size: 0.92rem;
             font-family: inherit;
-            color: #1e293b;
+            color: var(--austin-texto);
             resize: vertical;
             line-height: 1.6;
             transition: border-color 0.15s;
@@ -81,36 +83,16 @@
             padding: 10px 12px;
             font-size: 0.9rem;
             font-family: inherit;
-            color: #1e293b;
+            color: var(--austin-texto);
             background: var(--white);
             outline: none;
             transition: border-color 0.15s;
         }
         select:focus { border-color: var(--austin-blue); }
 
-        .optional-badge { text-transform: none; font-weight: 400; color: #94a3b8; }
+        .optional-badge { text-transform: none; font-weight: 400; color: var(--austin-texto-suave); }
 
         .campo-edad { max-width: 320px; margin-bottom: 18px; }
-
-        .contexto-pud-panel {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            background: #eef4ff;
-            border: 1px solid #c7d7f5;
-            border-radius: 7px;
-            padding: 10px 12px;
-            margin-bottom: 16px;
-            font-size: 0.78rem;
-            color: #1e293b;
-        }
-        .contexto-pud-titulo {
-            font-weight: 800;
-            color: var(--austin-blue);
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-        }
 
         button.btn-main {
             margin-top: 14px;
@@ -121,8 +103,6 @@
             width: 100%;
             font-size: 0.95rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.2s;
@@ -163,12 +143,12 @@
                 min-height: 280px;
             }
         }
-        button.btn-main:hover { background: var(--austin-blue); }
+        button.btn-main:hover { background: var(--austin-naranja-oscuro); }
 
         /* OUTPUT */
         .output-wrapper {
             margin-top: 28px;
-            background: #1e293b;
+            background: var(--austin-fondo);
             border-radius: 8px;
             padding: 22px;
         }
@@ -180,7 +160,7 @@
             margin-bottom: 12px;
         }
         .output-header label {
-            color: #94a3b8;
+            color: var(--austin-texto-suave);
             margin: 0;
             font-size: 0.72rem;
         }
@@ -195,23 +175,27 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn-copy:hover { background: #2563eb; }
+        .btn-copy:hover { background: var(--austin-petroleo-medio); }
 
         #output-box {
             width: 100%;
             min-height: 260px;
-            background: #0f172a;
-            color: #cbd5e1;
-            border: 1px solid #334155;
+            background: var(--austin-superficie);
+            color: var(--austin-texto);
+            border: 1px solid var(--austin-borde);
             border-radius: 6px;
             padding: 18px;
-            font-family: 'Courier New', monospace;
+            font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
             font-size: 0.88rem;
             line-height: 1.7;
             white-space: pre-wrap;
             overflow-wrap: break-word;
             resize: vertical;
         }
+        /* Pasos 1 y 2 (estilos base en austin-tokens.css) */
+        #btn-paso-1 { margin: 0 0 22px; }
+        #btn-paso-2 { margin: 22px 0 6px; }
+        #paso-2-flecha { margin: 2px 0 6px; }
     </style>
 </head>
 <body>
@@ -223,8 +207,13 @@
         <p>Marco EpC — Harvard Project Zero &nbsp;|&nbsp; Austin Eco Bilingual School</p>
     </header>
 
-    <div id="contexto-pud-panel" class="contexto-pud-panel"></div>
+    <div id="del-pud" hidden></div>
 
+    <button type="button" class="paso-btn" id="btn-paso-1" data-estado="actual">
+        <span class="paso-num">1</span>
+        <span class="paso-texto">Contá qué querés secuenciar</span>
+        <span class="paso-estado" id="paso-1-estado"></span>
+    </button>
     <div class="form-group campo-edad">
         <label id="label-nivel" for="f-nivel">Edad / Grado del alumno <span class="optional-badge">(opcional)</span></label>
         <select id="f-nivel">
@@ -235,7 +224,11 @@
     <label for="f-objetivo">Objetivo o tópico a desarrollar</label>
     <textarea id="f-objetivo" rows="6" placeholder="Describí el objetivo de comprensión, tópico generativo, contenidos clave o performances que querés secuenciar..."></textarea>
 
-    <button class="btn-main" onclick="construirPrompt()">Construir Prompt para Gemini</button>
+    <button type="button" class="paso-btn" id="btn-paso-2" data-estado="espera" disabled>
+        <span class="paso-num">2</span>
+        <span class="paso-texto" id="paso-2-texto">Generar el prompt</span>
+    </button>
+    <div id="paso-2-flecha" hidden><svg class="paso-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 
     <div class="output-wrapper">
         <div class="output-header">
@@ -247,6 +240,10 @@
 
 </div>
 
+<script src="nivel-inicial.js"></script>
+<script src="pud-contexto.js"></script>
+<script src="austin-ui.js"></script>
+<script src="austin-pasos.js"></script>
 <script>
     // ---- Idioma del objetivo (mismo diccionario que generador-tareas.html / index.html) ----
 
@@ -331,23 +328,24 @@
         if (!select || !label) return;
         if (select.dataset.idioma === idioma) return;
 
+        // Las salas existen en los dos idiomas: si había una elegida, se conserva.
+        const salaPrevia = esSalaInicial(select.value) ? select.value : '';
         select.dataset.idioma = idioma;
-        select.innerHTML = '<option value="">Sin especificar</option>';
-        Object.entries(tablaNiveles(idioma)).forEach(([valor, info]) => {
-            const opt = document.createElement('option');
-            opt.value = valor;
-            opt.textContent = info.label;
-            select.appendChild(opt);
-        });
-        select.value = '';
-        delete select.dataset.autofilled;
+        llenarSelectorNivel(select, tablaNiveles(idioma), idioma === 'en' ? 'Primaria y Secundaria (CEFR)' : 'Primaria y Secundaria');
+        select.value = salaPrevia;
+        if (!salaPrevia) delete select.dataset.autofilled;
 
         label.innerHTML = idioma === 'en'
-            ? 'Nivel de inglés (CEFR) <span class="optional-badge">(opcional)</span>'
-            : 'Edad / Grado del alumno <span class="optional-badge">(opcional)</span>';
+            ? 'Sala o nivel de inglés <span class="optional-badge">(opcional)</span>'
+            : 'Sala / Grado del alumno <span class="optional-badge">(opcional)</span>';
+
+        if (window.contextoPUD) aplicarContextoPUD(window.contextoPUD);
     }
 
     function bloqueNivel(nivel, idioma) {
+        if (esSalaInicial(nivel)) {
+            return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${bloqueCalibracionInicial(nivel, idioma === 'en')}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nToda la secuencia (títulos, preguntas, consignas y experiencias) tiene que respetar este nivel.`;
+        }
         const info = tablaNiveles(idioma)[nivel];
         if (!info) return null;
         return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCALIBRACIÓN POR NIVEL (${info.label})\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n- VOCABULARIO: ${info.vocabulario}\n- GRAMÁTICA/SINTAXIS: ${info.gramatica}\nAjustá la complejidad de las actividades, consignas y preguntas guía de los 5 pasos a este nivel.`;
@@ -362,63 +360,39 @@
             .replace(/'/g, '&#39;');
     }
 
-    // ---- Contexto del PUD activo (recibido por postMessage desde index.html) ----
+    // ---- Contexto del PUD activo (contrato en pud-contexto.js) ----
+    // Secuencias muestra todas las metas y todos los desempeños del PUD.
 
     window.contextoPUD = null;
 
-    if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'secuencias:ready' }, '*');
-    }
+    PudContexto.alRecibir(aplicarContextoPUD);
 
-    window.addEventListener('message', (event) => {
-        const data = event.data;
-        if (!data || data.type !== 'pud-workspace:contexto') return;
-        aplicarContextoPUD(data);
-    });
-
-    function aplicarContextoPUD(data) {
-        window.contextoPUD = data;
+    function aplicarContextoPUD(ctx) {
+        PasosPrompt.cambio(); // el contexto del PUD entra en el prompt
+        window.contextoPUD = ctx;
 
         const selectNivel = document.getElementById('f-nivel');
-        if (data.grado && selectNivel && selectNivel.dataset.idioma === 'es'
+        // Las salas están en el selector de ambos idiomas; los grados, solo en castellano.
+        if (ctx?.grado && selectNivel && (selectNivel.dataset.idioma === 'es' || esSalaInicial(ctx.grado))
             && (selectNivel.value === '' || selectNivel.dataset.autofilled === 'true')) {
-            const opcion = Array.from(selectNivel.options).find(o => o.value === data.grado.trim());
+            const opcion = Array.from(selectNivel.options).find(o => o.value === ctx.grado.trim());
             if (opcion) {
                 selectNivel.value = opcion.value;
                 selectNivel.dataset.autofilled = 'true';
             }
         }
 
-        renderContextoPUD(data);
+        PudContexto.renderBloque(document.getElementById('del-pud'), ctx, { filtro: 'todos' });
     }
 
-    function renderContextoPUD(data) {
-        const panel = document.getElementById('contexto-pud-panel');
-        if (!panel) return;
-
-        const tieneAlgo = data.materia || data.unitName || data.topic || (data.objetivos && data.objetivos.length > 0);
-        if (!tieneAlgo) { panel.style.display = 'none'; return; }
-
-        const partes = [`<p class="contexto-pud-titulo">📎 Contexto tomado del PUD activo</p>`];
-        if (data.materia) partes.push(`<span><strong>Materia:</strong> ${escapeHtml(data.materia)}</span>`);
-        if (data.unitName) partes.push(`<span><strong>Unidad:</strong> ${escapeHtml(data.unitName)}</span>`);
-        if (data.topic && data.topic !== data.unitName) partes.push(`<span><strong>Tema PUD:</strong> ${escapeHtml(data.topic)}</span>`);
-        if (data.objetivos && data.objetivos.length > 0) {
-            partes.push(`<span><strong>Objetivos:</strong> ${data.objetivos.map(escapeHtml).join(' · ')}</span>`);
-        }
-
-        panel.innerHTML = partes.join('');
-        panel.style.display = 'flex';
-    }
-
-    function bloqueContextoPUD(contexto) {
-        if (!contexto) return null;
+    function bloqueContextoPUD(ctx) {
+        if (!ctx) return null;
         const lineas = [];
-        if (contexto.materia) lineas.push(`- Materia/Área: ${contexto.materia}`);
-        if (contexto.unitName) lineas.push(`- Unidad didáctica: ${contexto.unitName}`);
-        if (contexto.topic && contexto.topic !== contexto.unitName) lineas.push(`- Tópico de la PUD: ${contexto.topic}`);
-        if (contexto.objetivos && contexto.objetivos.length > 0) {
-            lineas.push(`- Objetivos de comprensión de la unidad: ${contexto.objetivos.join(' | ')}`);
+        if (ctx.materia) lineas.push(`- Materia/Área: ${ctx.materia}`);
+        if (ctx.titulo) lineas.push(`- Unidad didáctica: ${ctx.titulo}`);
+        if (ctx.metas?.length) lineas.push(`- Metas de comprensión de la unidad:\n${ctx.metas.map(m => `  · ${m.texto}`).join('\n')}`);
+        if (ctx.desempenos?.length) {
+            lineas.push(`- Desempeños de comprensión del PUD:\n${ctx.desempenos.map(d => `  · [${PudContexto.TIPOS[d.tipo]}] ${d.texto}`).join('\n')}`);
         }
         if (lineas.length === 0) return null;
         return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCONTEXTO DE LA UNIDAD DIDÁCTICA (PUD) ACTIVA\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTené en cuenta este contexto para que la secuencia sea coherente con la unidad en curso:\n${lineas.join('\n')}`;
@@ -426,8 +400,17 @@
 
     const campoObjetivo = document.getElementById('f-objetivo');
     sincronizarSelectorNivel(detectarIdiomaTexto(campoObjetivo.value));
+    // "Cambios sin guardar" = hay un objetivo escrito que todavía no se
+    // convirtió en prompt (o cambió desde el último prompt generado).
+    let objetivoDelUltimoPrompt = '';
+    function avisarSiHayCambios() {
+        const actual = campoObjetivo.value.trim();
+        PudContexto.avisarCambios(actual !== '' && actual !== objetivoDelUltimoPrompt);
+    }
+
     campoObjetivo.addEventListener('input', () => {
         sincronizarSelectorNivel(detectarIdiomaTexto(campoObjetivo.value));
+        avisarSiHayCambios();
     });
 
     // Si el docente toca el selector a mano, esa elección ya no es "autofill":
@@ -439,7 +422,7 @@
 
     function construirPrompt() {
         const objetivo = campoObjetivo.value.trim();
-        if (!objetivo) { alert("Ingresá un objetivo o tópico."); return; }
+        if (!objetivo) { AustinUI.avisar("Ingresá un objetivo o tópico para armar la secuencia.", { tipo: "error" }); return; }
 
         const idioma = detectarIdiomaTexto(objetivo);
         const nivel = document.getElementById('f-nivel').value;
@@ -450,7 +433,9 @@
             .map(bloque => `\n\n${bloque}`)
             .join('');
 
-        const prompt = `Actúa como un experto en EpC (Enseñanza para la Comprensión, Harvard Project Zero) con experiencia en planificación didáctica para educación bilingüe.
+        const prompt = esSalaInicial(nivel)
+            ? promptSecuenciaInicial(objetivo, extras, nivel, idioma === 'en')
+            : `Actúa como un experto en EpC (Enseñanza para la Comprensión, Harvard Project Zero) con experiencia en planificación didáctica para educación bilingüe.
 
 Tu tarea es generar una SECUENCIA DIDÁCTICA estructurada en exactamente 5 pasos según el marco EpC, a partir del siguiente objetivo o tópico:
 
@@ -492,6 +477,58 @@ Al inicio del documento indicá:
 El output debe estar listo para usar en el aula, con lenguaje claro y preciso. No agregues introducciones ni aclaraciones metodológicas dirigidas al docente fuera del formato solicitado.`;
 
         document.getElementById('output-box').textContent = prompt;
+        objetivoDelUltimoPrompt = objetivo;
+        PasosPrompt.generado();
+        avisarSiHayCambios();
+    }
+
+    // Jardín: los mismos 5 pasos EpC, traducidos a momentos de juego para
+    // la sala. Las reglas generales (duración, consignas, prohibiciones,
+    // lenguaje) vienen de nivel-inicial.js.
+    function promptSecuenciaInicial(objetivo, extras, sala, esIngles) {
+        const v = EJECUCION_INICIAL[sala];
+        return `Actúa como una docente experta en Nivel Inicial (Jardín), formada en EpC (Enseñanza para la Comprensión, Harvard Project Zero) y con experiencia en educación bilingüe.
+
+Tu tarea es generar una SECUENCIA DE EXPERIENCIAS PARA LA SALA en exactamente 5 momentos, a partir del siguiente tópico:
+
+---
+${objetivo}
+---${extras}
+
+${bloqueReglasInicial(sala, esIngles)}
+
+ESTRUCTURA OBLIGATORIA DE LOS 5 MOMENTOS:
+
+MOMENTO 1 — INVITACIÓN (Tópico generativo hecho juego)
+Un objeto sorpresa, un títere, una canción o una ronda que despierte curiosidad. Incluí la pregunta que abre el juego.
+
+MOMENTO 2 — EXPLORACIÓN (Metas de comprensión en acción)
+Los niños exploran con los sentidos y con el cuerpo. La docente acompaña con preguntas y comentarios, no explica ni da definiciones.
+
+MOMENTO 3 — JUEGO Y CONEXIÓN (Transferencia)
+Juego simbólico o en rincones donde usan lo que descubrieron en otra situación (la casita, el mercado, la granja, la huerta).
+
+MOMENTO 4 — CREACIÓN (Desempeño de comprensión visible)
+Una producción concreta hecha jugando: una construcción, una pintura grande, una dramatización, una canción inventada, un mural entre todos.
+
+MOMENTO 5 — RONDA DE CIERRE (Valoración continua)
+Una ronda breve de "¿qué descubrimos?", documentación con fotos o audios y algo para compartir con las familias. Sin evaluaciones escritas ni calificaciones.
+
+FORMATO DE ENTREGA:
+Para cada momento incluí:
+- Nombre con tono de juego
+- Duración (${v.minutos} minutos por experiencia)
+- Pregunta guía, como la diría un chico de ${v.edad}
+- 1 o 2 experiencias concretas, con la consigna oral textual que la docente les dice a los niños
+- Materiales necesarios (seguros para la edad)
+- Qué observa la docente durante el juego (en lugar de "cómo se evalúa")
+- Conexión con el marco EpC, en una línea
+
+Al inicio del documento indicá:
+- Título de la secuencia (máximo 4 palabras, con tono de juego o de cuento)
+- Meta de comprensión central (una oración que comience con "${metaInicial(esIngles)}")
+
+El output debe estar listo para usar en la sala, con lenguaje simple y cálido. No agregues introducciones ni fundamentación teórica fuera del formato solicitado.`;
     }
 
     async function copiar() {
@@ -499,7 +536,7 @@ El output debe estar listo para usar en el aula, con lenguaje claro y preciso. N
         const btn = document.querySelector('.btn-copy');
         const texto = box.textContent;
 
-        if (texto.startsWith("Completá")) { alert("Primero generá el prompt."); return; }
+        if (texto.startsWith("Completá")) { AustinUI.avisar("Primero generá el prompt; después podés copiarlo.", { tipo: "error" }); return; }
 
         try {
             await navigator.clipboard.writeText(texto);
@@ -514,9 +551,20 @@ El output debe estar listo para usar en el aula, con lenguaje claro y preciso. N
 
         const orig = btn.textContent;
         btn.textContent = "¡Copiado!";
-        btn.style.background = "#16a34a";
+        btn.style.background = "var(--austin-lima-oscuro)";
         setTimeout(() => { btn.textContent = orig; btn.style.background = ""; }, 1500);
     }
+</script>
+<script>
+    // Pasos 1 y 2 (ver austin-pasos.js)
+    PasosPrompt.montar({
+        campos: [campoObjetivo, document.getElementById('f-nivel')],
+        listo: () => campoObjetivo.value.trim() !== '',
+        faltante: () => 'Falta: objetivo o tópico',
+        enfocar: () => campoObjetivo.focus(),
+        generar: construirPrompt,
+        copiar: copiar
+    });
 </script>
 </body>
 </html>
