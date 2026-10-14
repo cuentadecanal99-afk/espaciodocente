@@ -1,0 +1,129 @@
+/* =========================================================================
+   Identidad visual Austin · compartida por todas las páginas del sistema
+   (index, coordinadores, Al Día y las herramientas que se cargan en iframe).
+   Cada página puede mapear sus variables propias a estos tokens.
+   ========================================================================= */
+:root {
+    --austin-petroleo: #26343E;
+    --austin-petroleo-medio: #35505E;
+    --austin-azul-claro: #EAF0F3;
+    --austin-lima: #A9CF44;
+    --austin-lima-oscuro: #8FB534;
+    --austin-naranja: #F18636;
+    --austin-naranja-oscuro: #E5731F;
+    --austin-naranja-claro: #FDF1E7;
+    --austin-fondo: #F4F6F5;
+    --austin-superficie: #FFFFFF;
+    --austin-borde: #DFE5E5;
+    --austin-texto: #26343E;
+    --austin-texto-suave: #5A6B75;
+    --austin-error: #B23A1E;
+    --austin-error-claro: #FBEDE9;
+    --austin-fuente: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --austin-radio: 12px;
+}
+
+/* Los controles de formulario no heredan la fuente por defecto.
+   :where() deja la especificidad en 0, así cualquier regla de la página gana. */
+:where(button, input, select, textarea) { font-family: inherit; }
+
+/* Foco visible solo al navegar con teclado */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--austin-lima);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------- Avisos (ver austin-ui.js) ---------- */
+.austin-avisos {
+    position: fixed; z-index: 10000; bottom: 20px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; gap: 8px; align-items: center;
+    width: min(440px, calc(100vw - 32px)); pointer-events: none;
+}
+.austin-aviso {
+    pointer-events: auto; width: 100%;
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 14px; border-radius: 10px;
+    background: var(--austin-petroleo); color: #fff;
+    font: 500 0.9rem/1.45 var(--austin-fuente);
+    box-shadow: 0 10px 30px rgba(38, 52, 62, 0.25);
+    border-left: 4px solid var(--austin-lima);
+    animation: austin-aviso-entra 0.18s ease-out;
+}
+.austin-aviso.error { border-left-color: var(--austin-naranja); }
+.austin-aviso p { margin: 0; flex: 1; white-space: pre-line; }
+.austin-aviso small { display: block; margin-top: 4px; opacity: 0.7; font-weight: 400; word-break: break-word; }
+.austin-aviso button {
+    background: none; border: none; color: inherit; opacity: 0.7; cursor: pointer;
+    font: inherit; font-size: 1.1rem; line-height: 1; padding: 0 2px;
+}
+.austin-aviso button:hover { opacity: 1; }
+@keyframes austin-aviso-entra { from { opacity: 0; transform: translateY(8px); } }
+
+/* ---------- Diálogo de confirmación / dato (ver austin-ui.js) ---------- */
+.austin-dialogo {
+    border: none; border-radius: 14px; padding: 24px; width: min(420px, calc(100vw - 32px));
+    color: var(--austin-texto); font-family: var(--austin-fuente);
+    box-shadow: 0 20px 50px rgba(38, 52, 62, 0.3);
+}
+.austin-dialogo::backdrop { background: rgba(38, 52, 62, 0.45); }
+.austin-dialogo h3 { margin: 0 0 8px; font-size: 1.05rem; }
+.austin-dialogo p { margin: 0 0 16px; color: var(--austin-texto-suave); font-size: 0.9rem; line-height: 1.5; }
+.austin-dialogo label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; }
+.austin-dialogo input {
+    width: 100%; box-sizing: border-box; padding: 10px 12px; margin-bottom: 6px;
+    border: 1.5px solid var(--austin-borde); border-radius: 8px; font: inherit;
+}
+.austin-dialogo input:focus { outline: none; border-color: var(--austin-lima-oscuro); }
+.austin-dialogo .austin-dialogo-error { min-height: 1.2em; margin: 0 0 10px; color: var(--austin-error); font-size: 0.8rem; }
+.austin-dialogo-acciones { display: flex; flex-direction: row-reverse; justify-content: flex-start; gap: 8px; margin-top: 8px; }
+.austin-dialogo-acciones button {
+    padding: 10px 16px; border-radius: 8px; font: 600 0.88rem var(--austin-fuente); cursor: pointer;
+    border: 1.5px solid var(--austin-borde); background: #fff; color: var(--austin-texto);
+}
+.austin-dialogo-acciones button[value="ok"] { background: var(--austin-petroleo); border-color: var(--austin-petroleo); color: #fff; }
+.austin-dialogo-acciones button[value="ok"].peligro { background: var(--austin-naranja-oscuro); border-color: var(--austin-naranja-oscuro); }
+
+/* ---------- Pasos (flujo del PUD, Secuencias, Tareas) ----------
+   data-estado: espera (gris, deshabilitado) · actual (lo próximo que hay que
+   hacer: petróleo con reborde naranja) · hecho (blanco con tilde lima) */
+.paso-btn {
+    display: flex; align-items: center; gap: 12px; width: 100%; box-sizing: border-box;
+    padding: 14px 16px; border-radius: 12px; text-align: left;
+    border: 1.5px solid var(--austin-borde); background: var(--austin-fondo); color: #93A1A9;
+    font: 700 0.95rem/1.3 var(--austin-fuente);
+    cursor: not-allowed;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.paso-btn .paso-num {
+    flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 0.85rem; font-weight: 800;
+    background: #fff; border: 1.5px solid var(--austin-borde); color: #93A1A9;
+}
+.paso-btn .paso-texto { flex: 1; }
+.paso-btn .paso-estado { font-size: 0.78rem; font-weight: 600; opacity: 0.9; text-align: right; }
+.paso-btn[data-estado="actual"] {
+    background: var(--austin-petroleo-medio); border: 2px solid var(--austin-naranja); color: #fff;
+    cursor: pointer; box-shadow: 0 6px 16px rgba(38, 52, 62, 0.18);
+}
+.paso-btn[data-estado="actual"]:hover { background: var(--austin-petroleo); }
+.paso-btn[data-estado="actual"] .paso-num { background: #fff; border-color: #fff; color: var(--austin-petroleo-medio); }
+.paso-btn[data-estado="hecho"] { background: #fff; border-color: var(--austin-lima); color: var(--austin-texto); cursor: pointer; }
+.paso-btn[data-estado="hecho"]:hover { background: #F6FAEC; }
+.paso-btn[data-estado="hecho"] .paso-num { background: var(--austin-lima); border-color: var(--austin-lima); color: var(--austin-petroleo); font-size: 0; }
+.paso-btn[data-estado="hecho"] .paso-num::after { content: '✓'; font-size: 0.95rem; }
+.paso-flecha {
+    display: block; width: 30px; height: 30px; margin: 0 auto; color: var(--austin-petroleo-medio);
+    animation: paso-flecha-baja 1.2s ease-in-out infinite;
+}
+.paso-flecha[hidden] { display: none; }
+@keyframes paso-flecha-baja { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(4px); } }
+@media (max-width: 680px) { .paso-btn .paso-estado { display: none; } }
