@@ -1,0 +1,11 @@
+# Netlify: cabeceras de seguridad para todo el sitio.
+# Sin Content-Security-Policy de scripts: las páginas usan scripts y onclick
+# en línea; una CSP estricta las rompería. Esta solo impide que otro sitio
+# meta las páginas en un iframe y bloquea plugins.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'

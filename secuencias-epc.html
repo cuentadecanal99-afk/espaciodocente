@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secuencias Didácticas EpC | Austin Eco</title>
+    <link rel="icon" type="image/jpeg" href="austin-eco-bilingual-school-campana-argentina.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="austin-tokens.css">
     <style>
         :root {
-            --austin-blue: #1a2e5a;
-            --austin-red: #8b1d22;
-            --green-dark: #1a472a;
-            --border: #e2e8f0;
-            --surface: #f8f9fa;
+            --austin-blue: var(--austin-petroleo);
+            --austin-red: var(--austin-naranja);
+            --green-dark: var(--austin-lima-oscuro);
+            --border: var(--austin-borde);
+            --surface: var(--austin-fondo);
             --white: #ffffff;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: var(--austin-fuente);
             background: var(--surface);
-            color: #333;
+            color: var(--austin-texto);
             padding: 32px 20px;
             display: flex;
             justify-content: center;
@@ -30,13 +34,13 @@
             max-width: 860px;
             background: var(--white);
             border-radius: 10px;
-            border-top: 10px solid var(--austin-blue);
+            border-top: 4px solid var(--austin-lima);
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
             padding: 36px;
         }
 
         header {
-            border-bottom: 2px solid var(--austin-red);
+            border-bottom: 1px solid var(--austin-borde);
             margin-bottom: 24px;
             padding-bottom: 14px;
         }
@@ -44,16 +48,14 @@
             color: var(--austin-blue);
             font-size: 1.3rem;
             font-weight: 800;
-            text-transform: uppercase;
             margin: 0;
         }
-        header p { color: #64748b; font-size: 0.8rem; margin-top: 4px; }
+        header p { color: var(--austin-texto-suave); font-size: 0.8rem; margin-top: 4px; }
 
         label {
             display: block;
             font-weight: 700;
             font-size: 0.72rem;
-            text-transform: uppercase;
             letter-spacing: 0.4px;
             color: var(--austin-blue);
             margin-bottom: 8px;
@@ -66,7 +68,7 @@
             padding: 12px 14px;
             font-size: 0.92rem;
             font-family: inherit;
-            color: #1e293b;
+            color: var(--austin-texto);
             resize: vertical;
             line-height: 1.6;
             transition: border-color 0.15s;
@@ -81,36 +83,16 @@
             padding: 10px 12px;
             font-size: 0.9rem;
             font-family: inherit;
-            color: #1e293b;
+            color: var(--austin-texto);
             background: var(--white);
             outline: none;
             transition: border-color 0.15s;
         }
         select:focus { border-color: var(--austin-blue); }
 
-        .optional-badge { text-transform: none; font-weight: 400; color: #94a3b8; }
+        .optional-badge { text-transform: none; font-weight: 400; color: var(--austin-texto-suave); }
 
         .campo-edad { max-width: 320px; margin-bottom: 18px; }
-
-        .contexto-pud-panel {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            background: #eef4ff;
-            border: 1px solid #c7d7f5;
-            border-radius: 7px;
-            padding: 10px 12px;
-            margin-bottom: 16px;
-            font-size: 0.78rem;
-            color: #1e293b;
-        }
-        .contexto-pud-titulo {
-            font-weight: 800;
-            color: var(--austin-blue);
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-        }
 
         button.btn-main {
             margin-top: 14px;
@@ -121,8 +103,6 @@
             width: 100%;
             font-size: 0.95rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.2s;
@@ -163,12 +143,12 @@
                 min-height: 280px;
             }
         }
-        button.btn-main:hover { background: var(--austin-blue); }
+        button.btn-main:hover { background: var(--austin-naranja-oscuro); }
 
         /* OUTPUT */
         .output-wrapper {
             margin-top: 28px;
-            background: #1e293b;
+            background: var(--austin-fondo);
             border-radius: 8px;
             padding: 22px;
         }
@@ -180,7 +160,7 @@
             margin-bottom: 12px;
         }
         .output-header label {
-            color: #94a3b8;
+            color: var(--austin-texto-suave);
             margin: 0;
             font-size: 0.72rem;
         }
@@ -195,23 +175,27 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn-copy:hover { background: #2563eb; }
+        .btn-copy:hover { background: var(--austin-petroleo-medio); }
 
         #output-box {
             width: 100%;
             min-height: 260px;
-            background: #0f172a;
-            color: #cbd5e1;
-            border: 1px solid #334155;
+            background: var(--austin-superficie);
+            color: var(--austin-texto);
+            border: 1px solid var(--austin-borde);
             border-radius: 6px;
             padding: 18px;
-            font-family: 'Courier New', monospace;
+            font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
             font-size: 0.88rem;
             line-height: 1.7;
             white-space: pre-wrap;
             overflow-wrap: break-word;
             resize: vertical;
         }
+        /* Pasos 1 y 2 (estilos base en austin-tokens.css) */
+        #btn-paso-1 { margin: 0 0 22px; }
+        #btn-paso-2 { margin: 22px 0 6px; }
+        #paso-2-flecha { margin: 2px 0 6px; }
     </style>
 </head>
 <body>
@@ -223,8 +207,13 @@
         <p>Marco EpC — Harvard Project Zero &nbsp;|&nbsp; Austin Eco Bilingual School</p>
     </header>
 
-    <div id="contexto-pud-panel" class="contexto-pud-panel"></div>
+    <div id="del-pud" hidden></div>
 
+    <button type="button" class="paso-btn" id="btn-paso-1" data-estado="actual">
+        <span class="paso-num">1</span>
+        <span class="paso-texto">Contá qué querés secuenciar</span>
+        <span class="paso-estado" id="paso-1-estado"></span>
+    </button>
     <div class="form-group campo-edad">
         <label id="label-nivel" for="f-nivel">Edad / Grado del alumno <span class="optional-badge">(opcional)</span></label>
         <select id="f-nivel">
@@ -235,7 +224,11 @@
     <label for="f-objetivo">Objetivo o tópico a desarrollar</label>
     <textarea id="f-objetivo" rows="6" placeholder="Describí el objetivo de comprensión, tópico generativo, contenidos clave o performances que querés secuenciar..."></textarea>
 
-    <button class="btn-main" onclick="construirPrompt()">Construir Prompt para Gemini</button>
+    <button type="button" class="paso-btn" id="btn-paso-2" data-estado="espera" disabled>
+        <span class="paso-num">2</span>
+        <span class="paso-texto" id="paso-2-texto">Generar el prompt</span>
+    </button>
+    <div id="paso-2-flecha" hidden><svg class="paso-flecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 
     <div class="output-wrapper">
         <div class="output-header">
@@ -247,6 +240,10 @@
 
 </div>
 
+<script src="nivel-inicial.js"></script>
+<script src="pud-contexto.js"></script>
+<script src="austin-ui.js"></script>
+<script src="austin-pasos.js"></script>
 <script>
     // ---- Idioma del objetivo (mismo diccionario que generador-tareas.html / index.html) ----
 
@@ -331,23 +328,24 @@
         if (!select || !label) return;
         if (select.dataset.idioma === idioma) return;
 
+        // Las salas existen en los dos idiomas: si había una elegida, se conserva.
+        const salaPrevia = esSalaInicial(select.value) ? select.value : '';
         select.dataset.idioma = idioma;
-        select.innerHTML = '<option value="">Sin especificar</option>';
-        Object.entries(tablaNiveles(idioma)).forEach(([valor, info]) => {
-            const opt = document.createElement('option');
-            opt.value = valor;
-            opt.textContent = info.label;
-            select.appendChild(opt);
-        });
-        select.value = '';
-        delete select.dataset.autofilled;
+        llenarSelectorNivel(select, tablaNiveles(idioma), idioma === 'en' ? 'Primaria y Secundaria (CEFR)' : 'Primaria y Secundaria');
+        select.value = salaPrevia;
+        if (!salaPrevia) delete select.dataset.autofilled;
 
         label.innerHTML = idioma === 'en'
-            ? 'Nivel de inglés (CEFR) <span class="optional-badge">(opcional)</span>'
-            : 'Edad / Grado del alumno <span class="optional-badge">(opcional)</span>';
+            ? 'Sala o nivel de inglés <span class="optional-badge">(opcional)</span>'
+            : 'Sala / Grado del alumno <span class="optional-badge">(opcional)</span>';
+
+        if (window.contextoPUD) aplicarContextoPUD(window.contextoPUD);
     }
 
     function bloqueNivel(nivel, idioma) {
+        if (esSalaInicial(nivel)) {
+            return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${bloqueCalibracionInicial(nivel, idioma === 'en')}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nToda la secuencia (títulos, preguntas, consignas y experiencias) tiene que respetar este nivel.`;
+        }
         const info = tablaNiveles(idioma)[nivel];
         if (!info) return null;
         return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCALIBRACIÓN POR NIVEL (${info.label})\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n- VOCABULARIO: ${info.vocabulario}\n- GRAMÁTICA/SINTAXIS: ${info.gramatica}\nAjustá la complejidad de las actividades, consignas y preguntas guía de los 5 pasos a este nivel.`;
@@ -362,63 +360,39 @@
             .replace(/'/g, '&#39;');
     }
 
-    // ---- Contexto del PUD activo (recibido por postMessage desde index.html) ----
+    // ---- Contexto del PUD activo (contrato en pud-contexto.js) ----
+    // Secuencias muestra todas las metas y todos los desempeños del PUD.
 
     window.contextoPUD = null;
 
-    if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'secuencias:ready' }, '*');
-    }
+    PudContexto.alRecibir(aplicarContextoPUD);
 
-    window.addEventListener('message', (event) => {
-        const data = event.data;
-        if (!data || data.type !== 'pud-workspace:contexto') return;
-        aplicarContextoPUD(data);
-    });
-
-    function aplicarContextoPUD(data) {
-        window.contextoPUD = data;
+    function aplicarContextoPUD(ctx) {
+        PasosPrompt.cambio(); // el contexto del PUD entra en el prompt
+        window.contextoPUD = ctx;
 
         const selectNivel = document.getElementById('f-nivel');
-        if (data.grado && selectNivel && selectNivel.dataset.idioma === 'es'
+        // Las salas están en el selector de ambos idiomas; los grados, solo en castellano.
+        if (ctx?.grado && selectNivel && (selectNivel.dataset.idioma === 'es' || esSalaInicial(ctx.grado))
             && (selectNivel.value === '' || selectNivel.dataset.autofilled === 'true')) {
-            const opcion = Array.from(selectNivel.options).find(o => o.value === data.grado.trim());
+            const opcion = Array.from(selectNivel.options).find(o => o.value === ctx.grado.trim());
             if (opcion) {
                 selectNivel.value = opcion.value;
                 selectNivel.dataset.autofilled = 'true';
             }
         }
 
-        renderContextoPUD(data);
+        PudContexto.renderBloque(document.getElementById('del-pud'), ctx, { filtro: 'todos' });
     }
 
-    function renderContextoPUD(data) {
-        const panel = document.getElementById('contexto-pud-panel');
-        if (!panel) return;
-
-        const tieneAlgo = data.materia || data.unitName || data.topic || (data.objetivos && data.objetivos.length > 0);
-        if (!tieneAlgo) { panel.style.display = 'none'; return; }
-
-        const partes = [`<p class="contexto-pud-titulo">📎 Contexto tomado del PUD activo</p>`];
-        if (data.materia) partes.push(`<span><strong>Materia:</strong> ${escapeHtml(data.materia)}</span>`);
-        if (data.unitName) partes.push(`<span><strong>Unidad:</strong> ${escapeHtml(data.unitName)}</span>`);
-        if (data.topic && data.topic !== data.unitName) partes.push(`<span><strong>Tema PUD:</strong> ${escapeHtml(data.topic)}</span>`);
-        if (data.objetivos && data.objetivos.length > 0) {
-            partes.push(`<span><strong>Objetivos:</strong> ${data.objetivos.map(escapeHtml).join(' · ')}</span>`);
-        }
-
-        panel.innerHTML = partes.join('');
-        panel.style.display = 'flex';
-    }
-
-    function bloqueContextoPUD(contexto) {
-        if (!contexto) return null;
+    function bloqueContextoPUD(ctx) {
+        if (!ctx) return null;
         const lineas = [];
-        if (contexto.materia) lineas.push(`- Materia/Área: ${contexto.materia}`);
-        if (contexto.unitName) lineas.push(`- Unidad didáctica: ${contexto.unitName}`);
-        if (contexto.topic && contexto.topic !== contexto.unitName) lineas.push(`- Tópico de la PUD: ${contexto.topic}`);
-        if (contexto.objetivos && contexto.objetivos.length > 0) {
-            lineas.push(`- Objetivos de comprensión de la unidad: ${contexto.objetivos.join(' | ')}`);
+        if (ctx.materia) lineas.push(`- Materia/Área: ${ctx.materia}`);
+        if (ctx.titulo) lineas.push(`- Unidad didáctica: ${ctx.titulo}`);
+        if (ctx.metas?.length) lineas.push(`- Metas de comprensión de la unidad:\n${ctx.metas.map(m => `  · ${m.texto}`).join('\n')}`);
+        if (ctx.desempenos?.length) {
+            lineas.push(`- Desempeños de comprensión del PUD:\n${ctx.desempenos.map(d => `  · [${PudContexto.TIPOS[d.tipo]}] ${d.texto}`).join('\n')}`);
         }
         if (lineas.length === 0) return null;
         return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nCONTEXTO DE LA UNIDAD DIDÁCTICA (PUD) ACTIVA\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nTené en cuenta este contexto para que la secuencia sea coherente con la unidad en curso:\n${lineas.join('\n')}`;
@@ -426,8 +400,17 @@
 
     const campoObjetivo = document.getElementById('f-objetivo');
     sincronizarSelectorNivel(detectarIdiomaTexto(campoObjetivo.value));
+    // "Cambios sin guardar" = hay un objetivo escrito que todavía no se
+    // convirtió en prompt (o cambió desde el último prompt generado).
+    let objetivoDelUltimoPrompt = '';
+    function avisarSiHayCambios() {
+        const actual = campoObjetivo.value.trim();
+        PudContexto.avisarCambios(actual !== '' && actual !== objetivoDelUltimoPrompt);
+    }
+
     campoObjetivo.addEventListener('input', () => {
         sincronizarSelectorNivel(detectarIdiomaTexto(campoObjetivo.value));
+        avisarSiHayCambios();
     });
 
     // Si el docente toca el selector a mano, esa elección ya no es "autofill":
@@ -439,7 +422,7 @@
 
     function construirPrompt() {
         const objetivo = campoObjetivo.value.trim();
-        if (!objetivo) { alert("Ingresá un objetivo o tópico."); return; }
+        if (!objetivo) { AustinUI.avisar("Ingresá un objetivo o tópico para armar la secuencia.", { tipo: "error" }); return; }
 
         const idioma = detectarIdiomaTexto(objetivo);
         const nivel = document.getElementById('f-nivel').value;
@@ -450,15 +433,37 @@
             .map(bloque => `\n\n${bloque}`)
             .join('');
 
-        const prompt = `Actúa como un experto en EpC (Enseñanza para la Comprensión, Harvard Project Zero) con experiencia en planificación didáctica para educación bilingüe.
+        const prompt = esSalaInicial(nivel)
+            ? promptSecuenciaInicial(objetivo, extras, nivel, idioma === 'en')
+            : promptSecuencia(objetivo, extras, metaFrase);
 
-Tu tarea es generar una SECUENCIA DIDÁCTICA estructurada en exactamente 5 pasos según el marco EpC, a partir del siguiente objetivo o tópico:
+        document.getElementById('output-box').textContent = prompt;
+        objetivoDelUltimoPrompt = objetivo;
+        PasosPrompt.generado();
+        avisarSiHayCambios();
+    }
+
+    // Primaria y Secundaria: los 5 pasos EpC como estructura, desarrollados
+    // en 5 a 10 clases de 60 minutos con todo el material para dar cada una
+    // (textos, preguntas, rutinas, claves). La IA entrega por partes: el mapa
+    // de la secuencia con la clase 1, y una clase más cada vez que el docente
+    // escribe «continuar», para que la respuesta no se corte ni se resuma.
+    function promptSecuencia(objetivo, extras, metaFrase) {
+        return `Actúa como un experto en EpC (Enseñanza para la Comprensión, Harvard Project Zero) con experiencia en planificación didáctica para educación bilingüe.
+
+Tu tarea es diseñar una SECUENCIA DIDÁCTICA completa y lista para dar en el aula, estructurada en los 5 pasos del marco EpC, a partir del siguiente objetivo o tópico:
 
 ---
 ${objetivo}
 ---${extras}
 
-ESTRUCTURA OBLIGATORIA DE LOS 5 PASOS:
+PRINCIPIO CENTRAL:
+- La secuencia es una línea de indagación, no una sucesión de temas sueltos. Se organiza alrededor de una pregunta esencial que plantea un problema intelectual genuino para investigar.
+- Cada clase aporta algo necesario para responder esa pregunta. Los alumnos avanzan desde sus saberes previos y supuestos iniciales hacia interpretaciones, conexiones y conclusiones mejor fundamentadas.
+- Desarrollá el contenido, no solo la descripción de las actividades. El docente tiene que poder dar cada clase sin preparar materiales ni completar lo que falta. Por ejemplo, en lugar de escribir «Los alumnos leen un texto sobre el patrimonio cultural y responden preguntas», escribí el texto completo, el vocabulario esencial, las preguntas, la clave de respuestas y la consigna que conecta la lectura con la pregunta esencial. Aplicá lo mismo a debates, análisis de fuentes, casos, imágenes e investigaciones.
+
+ESTRUCTURA OBLIGATORIA: 5 PASOS EpC, DE 5 A 10 CLASES DE 60 MINUTOS
+Los 5 pasos van en este orden. Cada paso se desarrolla en una o más clases; en total, entre 5 y 10 clases. Cada clase dura 60 minutos (1 hora reloj). Distribuí las clases según el trabajo intelectual que pide cada paso.
 
 PASO 1 — EXPLORACIÓN (Tópico Generativo)
 Activación de saberes previos y conexión con la experiencia del alumno. El tópico debe ser genuinamente interesante, central a la disciplina y accesible. Incluí una pregunta generativa potente que abra el pensamiento.
@@ -475,23 +480,118 @@ El alumno demuestra su comprensión a través de un producto auténtico y concre
 PASO 5 — EVALUACIÓN FINAL (Valoración Continua + Metacognición)
 Reflexión sobre el propio aprendizaje. Criterios de evaluación compartidos con el alumno. Cierre que consolida la comprensión y abre nuevas preguntas.
 
-FORMATO DE ENTREGA:
-Para cada paso incluí:
-- Nombre y subtítulo descriptivo
-- Duración estimada
-- Pregunta guía del paso
-- 2 a 3 actividades concretas con sugerencia para el docente
-- Recursos necesarios
-- Cómo se evalúa la comprensión en ese paso
-- Conexión explícita con el marco EpC
+PROGRESIÓN ENTRE CLASES:
+- Diseñá la secuencia completa antes de desarrollar cada clase en detalle.
+- La progresión es acumulativa: los conceptos, el vocabulario y la evidencia de clases anteriores se retoman y profundizan cuando corresponde.
+- Como guía flexible (no es una secuencia obligatoria de 8 clases): Observar → Preguntar → Comprender → Investigar → Comparar → Aplicar → Evaluar → Concluir. Adaptala a la materia y al tema.
+- Evitá la repetición disfrazada de progresión: cada clase nueva presenta un caso nuevo, profundiza un concepto, desafía un supuesto o pide transferir lo comprendido.
 
-Al inicio del documento indicá:
-- Título de la secuencia
-- Meta de comprensión central (una oración que comience con "${metaFrase}")
+FORMA DE ENTREGA: POR PARTES
+Primera respuesta:
+1. Título de la secuencia.
+2. Meta de comprensión central: una oración que comience con "${metaFrase}".
+3. Pregunta esencial de la secuencia.
+4. Mapa de la secuencia: una tabla con una fila por clase y estas columnas: N.º de clase, paso EpC, qué deben saber ya los alumnos, conocimiento o distinción conceptual nueva, evidencia/ejemplo/experiencia que la hace comprensible, operación de pensamiento que practican, cómo avanza la pregunta esencial y qué evidencia de aprendizaje informa la clase siguiente.
+5. La Clase 1 completa.
+6. Al final, una línea en el idioma de la secuencia que invite al docente a escribir «continuar» (o «continue») para recibir la Clase 2.
+Respuestas siguientes: cada vez que el docente escriba «continuar» o «continue», entregá la clase siguiente completa, fiel al mapa, sin resumir ni acortar, y terminá con la misma línea para la clase que sigue. La última clase (Paso 5) cierra la secuencia: valoración del producto final con sus criterios y reflexión sobre cómo cambió el pensamiento de los alumnos.
+
+CONTENIDO DE CADA CLASE:
+- Encabezado: Clase N de T · paso EpC (nombre y subtítulo) · pregunta guía del paso · objetivo de la clase · cómo avanza la pregunta esencial · conexión explícita con el marco EpC.
+- Etapas con su duración en minutos, que sumen 60. Asigná el tiempo según el trabajo intelectual: una lectura con análisis de evidencia necesita más tiempo que una actividad de recuperación inicial. No fuerces la misma cantidad de etapas en todas las clases ni cargues más actividades de las que entran en una hora; dejá tiempo para procesar, discutir, responder y reflexionar.
+- En cada actividad: qué hace el docente, qué hacen los alumnos (solos, en parejas o con toda la clase), qué busca lograr y la consigna textual para los alumnos.
+- Todo el material escrito completo: textos adaptados a la edad, vocabulario esencial cuando sirva, preguntas completas, consignas de discusión, casos y fuentes. Nunca uses consignas vagas como «discutan el tema», «investiguen» o «analicen la fuente» sin dar las preguntas, el material y el proceso.
+- Recursos que se proyectan o se usan directo: textos, imágenes, pizarrón, cuaderno, discusión. No pidas tarjetas, recortes, fichas elaboradas, materiales especiales ni disposiciones complicadas del aula.
+- Si un recurso no puede ir dentro de la clase, dá un link directo que hayas verificado o una descripción precisa para encontrarlo. Nunca inventes fuentes ni digas que verificaste un link si no pudiste hacerlo.
+
+PREGUNTAS (cuando la actividad las pida), tres tipos complementarios:
+A. De comprensión, cerradas: opción múltiple, unir, ordenar, verdadero/falso con corrección o respuesta breve. Se tienen que poder responder con el material dado.
+B. Abiertas, de interpretación y conexión: por qué importa algo, comparar casos, causas y consecuencias, conectar ideas, considerar otra perspectiva.
+C. De inferencia y evidencia: sacar conclusiones, distinguir hechos de interpretaciones, identificar la evidencia que sostiene una idea, evaluar explicaciones en competencia.
+Que avancen de la comprensión al razonamiento: no todas abiertas, pero sin que dominen las de memoria. Incluí la clave de respuestas de las cerradas y, para las abiertas, una respuesta modelo o los criterios de una buena respuesta; aceptá conclusiones distintas si están bien fundamentadas.
+Adaptá la complejidad del lenguaje al nivel de los alumnos sin quitar complejidad conceptual: lenguaje simple no significa pensamiento simple. Si la secuencia es en inglés como lengua extranjera, usá inglés accesible, oraciones claras, vocabulario andamiado y sentence starters cuando ayuden.
+
+RUTINAS DE PENSAMIENTO (Project Zero):
+Elegí cada rutina según su propósito cognitivo; por ejemplo: See, Think, Wonder; Think, Puzzle, Explore; Tug-of-War; Claim, Support, Question; Circle of Viewpoints; Connect, Extend, Challenge; I Used to Think… Now I Think…; What Makes You Say That? Preferí las que solo necesitan pizarrón, cuaderno y discusión. No las repitas mecánicamente ni las incluyas solo para que la clase parezca de indagación.
+Cada vez que uses una, indicá: su propósito, las instrucciones textuales del docente, los prompts textuales que responden los alumnos, qué se hace en forma individual, en parejas o con toda la clase, cómo el docente guía la discusión y qué tiene que buscar en las respuestas.
+
+CASOS, EVIDENCIA Y PERSPECTIVAS:
+- En Ciencias Sociales, Historia, Geografía y Ciudadanía, priorizá casos sustantivos que iluminen conceptos más amplios, con contexto histórico, fechas, lugares y actores; fuentes primarias o secundarias; mapas, fotos, objetos, documentos o datos; interpretaciones en disputa y dilemas éticos o sociales cuando existan; conexiones con el contexto de los alumnos; y momentos para distinguir hechos establecidos de afirmaciones discutidas.
+- No fabriques controversia donde no hace falta. En temas disputados (hechos históricos, soberanía, propiedad), presentá las perspectivas con equidad y exactitud, sin dar opiniones sin respaldo como hechos ni poner al mismo nivel posiciones con distinto respaldo en la evidencia.
+- En las demás materias, aplicá el mismo principio de evidencia sustantiva e indagación con los métodos propios de la disciplina.
+
+IMÁGENES:
+Cuando una imagen mejore el aprendizaje, usala como recurso y no como decoración. Para cada actividad con imagen: la imagen, una fuente directa verificada o una descripción de búsqueda precisa; el contexto necesario para interpretarla; consignas de observación concretas; preguntas que distingan lo que se ve de lo que se infiere; y la conexión con el objetivo de la clase. Preferí imágenes reales: objetos, sitios históricos, mapas, documentos, fenómenos científicos. Nunca le pidas al docente que arme una colección de imágenes o tarjetas.
+
+EVALUACIÓN FORMATIVA:
+- Integrala en todas las clases: preguntas de recuperación, respuestas a una lectura, justificación oral, ejercicios de afirmación y evidencia, comparaciones, tickets de salida, conclusiones breves escritas o reflexión sobre cómo cambió el propio pensamiento.
+- Para cada instancia, indicá qué comprensión o error frecuente chequea el docente y cómo el resultado influye en la clase siguiente.
+- El producto final (Paso 4) demuestra lo aprendido en toda la secuencia: por ejemplo, una recomendación fundamentada en evidencia, un expediente de caso, una comparación, una propuesta o una presentación.
+- Evaluá la calidad de la comprensión, la evidencia y el razonamiento, no la presentación artística ni la cantidad de texto escrito.
+
+CONTROL DE CALIDAD ANTES DE ENTREGAR CADA PARTE (no lo muestres; si algo no se cumple, corregilo antes de responder):
+- La pregunta esencial guía la secuencia y las clases forman una progresión coherente.
+- Cada clase tiene contenido sustantivo: textos, preguntas y actividades completos.
+- Hay equilibrio entre preguntas cerradas de comprensión y preguntas de razonamiento.
+- Las rutinas de pensamiento están desarrolladas, no solo nombradas.
+- Las imágenes y los recursos externos se pueden usar.
+- Los tiempos son realistas y suman 60 minutos por clase.
+- El docente casi no necesita preparar nada.
+- Hay claves de respuestas y criterios de evaluación donde hacen falta.
+- Actividades, objetivos y evaluación están alineados.
+- Los alumnos aplican, conectan y revisan su pensamiento.
+- El producto final sintetiza lo aprendido en la secuencia.
 
 El output debe estar listo para usar en el aula, con lenguaje claro y preciso. No agregues introducciones ni aclaraciones metodológicas dirigidas al docente fuera del formato solicitado.`;
+    }
 
-        document.getElementById('output-box').textContent = prompt;
+    // Jardín: los mismos 5 pasos EpC, traducidos a momentos de juego para
+    // la sala. Las reglas generales (duración, consignas, prohibiciones,
+    // lenguaje) vienen de nivel-inicial.js.
+    function promptSecuenciaInicial(objetivo, extras, sala, esIngles) {
+        const v = EJECUCION_INICIAL[sala];
+        return `Actúa como una docente experta en Nivel Inicial (Jardín), formada en EpC (Enseñanza para la Comprensión, Harvard Project Zero) y con experiencia en educación bilingüe.
+
+Tu tarea es generar una SECUENCIA DE EXPERIENCIAS PARA LA SALA en exactamente 5 momentos, a partir del siguiente tópico:
+
+---
+${objetivo}
+---${extras}
+
+${bloqueReglasInicial(sala, esIngles)}
+
+ESTRUCTURA OBLIGATORIA DE LOS 5 MOMENTOS:
+
+MOMENTO 1 — INVITACIÓN (Tópico generativo hecho juego)
+Un objeto sorpresa, un títere, una canción o una ronda que despierte curiosidad. Incluí la pregunta que abre el juego.
+
+MOMENTO 2 — EXPLORACIÓN (Metas de comprensión en acción)
+Los niños exploran con los sentidos y con el cuerpo. La docente acompaña con preguntas y comentarios, no explica ni da definiciones.
+
+MOMENTO 3 — JUEGO Y CONEXIÓN (Transferencia)
+Juego simbólico o en rincones donde usan lo que descubrieron en otra situación (la casita, el mercado, la granja, la huerta).
+
+MOMENTO 4 — CREACIÓN (Desempeño de comprensión visible)
+Una producción concreta hecha jugando: una construcción, una pintura grande, una dramatización, una canción inventada, un mural entre todos.
+
+MOMENTO 5 — RONDA DE CIERRE (Valoración continua)
+Una ronda breve de "¿qué descubrimos?", documentación con fotos o audios y algo para compartir con las familias. Sin evaluaciones escritas ni calificaciones.
+
+FORMATO DE ENTREGA:
+Para cada momento incluí:
+- Nombre con tono de juego
+- Duración (${v.minutos} minutos por experiencia)
+- Pregunta guía, como la diría un chico de ${v.edad}
+- 1 o 2 experiencias concretas, con la consigna oral textual que la docente les dice a los niños
+- Materiales necesarios (seguros para la edad)
+- Qué observa la docente durante el juego (en lugar de "cómo se evalúa")
+- Conexión con el marco EpC, en una línea
+
+Al inicio del documento indicá:
+- Título de la secuencia (máximo 4 palabras, con tono de juego o de cuento)
+- Meta de comprensión central (una oración que comience con "${metaInicial(esIngles)}")
+
+El output debe estar listo para usar en la sala, con lenguaje simple y cálido. No agregues introducciones ni fundamentación teórica fuera del formato solicitado.`;
     }
 
     async function copiar() {
@@ -499,7 +599,7 @@ El output debe estar listo para usar en el aula, con lenguaje claro y preciso. N
         const btn = document.querySelector('.btn-copy');
         const texto = box.textContent;
 
-        if (texto.startsWith("Completá")) { alert("Primero generá el prompt."); return; }
+        if (texto.startsWith("Completá")) { AustinUI.avisar("Primero generá el prompt; después podés copiarlo.", { tipo: "error" }); return; }
 
         try {
             await navigator.clipboard.writeText(texto);
@@ -514,9 +614,20 @@ El output debe estar listo para usar en el aula, con lenguaje claro y preciso. N
 
         const orig = btn.textContent;
         btn.textContent = "¡Copiado!";
-        btn.style.background = "#16a34a";
+        btn.style.background = "var(--austin-lima-oscuro)";
         setTimeout(() => { btn.textContent = orig; btn.style.background = ""; }, 1500);
     }
+</script>
+<script>
+    // Pasos 1 y 2 (ver austin-pasos.js)
+    PasosPrompt.montar({
+        campos: [campoObjetivo, document.getElementById('f-nivel')],
+        listo: () => campoObjetivo.value.trim() !== '',
+        faltante: () => 'Falta: objetivo o tópico',
+        enfocar: () => campoObjetivo.focus(),
+        generar: construirPrompt,
+        copiar: copiar
+    });
 </script>
 </body>
 </html>

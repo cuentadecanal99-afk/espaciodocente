@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Coordinadores | Austin Eco Bilingual School</title>
     <link rel="icon" type="image/jpeg" href="../austin-eco-bilingual-school-campana-argentina.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../austin-tokens.css">
     <style>
         :root {
-            --primary-bg: #2c3e50;
-            --panel-bg: #ecf0f1;
-            --accent-green: #27ae60;
-            --accent-blue: #2563eb;
-            --border-color: #cbd5e1;
-            --text-main: #334155;
+            --primary-bg: var(--austin-petroleo);
+            --panel-bg: var(--austin-fondo);
+            --accent-green: var(--austin-lima);
+            --accent-blue: var(--austin-petroleo-medio);
+            --border-color: var(--austin-borde);
+            --text-main: var(--austin-texto);
             /* Colores de estado del semáforo: fijos, no se reasignan a otra
                categoría ni se ciclan como paleta genérica. */
             --status-green: #16a34a;
@@ -25,22 +28,29 @@
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: var(--austin-fuente);
             margin: 0;
-            background: #f8fafc;
+            background: var(--austin-fondo);
             min-height: 100vh;
             color: var(--text-main);
         }
 
         header {
-            background: var(--primary-bg);
-            color: white;
-            padding: 10px 20px;
+            background: #FFFFFF;
+            color: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-inner {
+            max-width: 1090px;
+            margin: 0 auto;
+            padding: 13px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
             min-height: 50px;
+            box-sizing: border-box;
         }
 
         header img {
@@ -78,9 +88,9 @@
             padding: 24px;
             overflow-y: auto;
             background:
-                radial-gradient(circle at 12% 15%, rgba(39, 174, 96, 0.28), transparent 42%),
-                radial-gradient(circle at 88% 10%, rgba(37, 99, 235, 0.28), transparent 45%),
-                linear-gradient(160deg, #0f172a 0%, #1e293b 55%, #0f172a 100%);
+                radial-gradient(circle at 12% 15%, rgba(169, 207, 68, 0.22), transparent 42%),
+                radial-gradient(circle at 88% 10%, rgba(241, 134, 54, 0.22), transparent 45%),
+                linear-gradient(160deg, #26343E 0%, #35505E 55%, #26343E 100%);
         }
 
         body[data-view="gate"] #auth-gate { display: flex; }
@@ -118,7 +128,7 @@
         }
 
         .auth-gate-brand strong { display: block; font-size: 0.95rem; color: var(--primary-bg); }
-        .auth-gate-brand span { font-size: 0.76rem; color: #64748b; }
+        .auth-gate-brand span { font-size: 0.76rem; color: var(--austin-texto-suave); }
 
         .auth-gate-header h1 {
             margin: 0 0 6px;
@@ -130,7 +140,7 @@
         .auth-gate-header p {
             margin: 0 0 22px;
             font-size: 0.85rem;
-            color: #64748b;
+            color: var(--austin-texto-suave);
             line-height: 1.5;
         }
 
@@ -150,7 +160,7 @@
         .auth-field input:focus {
             outline: none;
             border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+            box-shadow: 0 0 0 3px rgba(169, 207, 68, 0.3);
         }
 
         .auth-gate-primary {
@@ -159,18 +169,18 @@
             margin-top: 4px;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            background: var(--austin-naranja);
             color: white;
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 10px 20px rgba(241, 134, 54, 0.28);
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
         .auth-gate-primary:hover {
             transform: translateY(-1px);
-            box-shadow: 0 14px 26px rgba(37, 99, 235, 0.32);
+            box-shadow: 0 14px 26px rgba(241, 134, 54, 0.34);
         }
 
         .auth-forgot-link {
@@ -193,7 +203,7 @@
         .auth-status {
             margin-top: 16px;
             font-size: 0.78rem;
-            color: #64748b;
+            color: var(--austin-texto-suave);
             line-height: 1.4;
             text-align: center;
         }
@@ -202,12 +212,12 @@
             display: none;
             align-items: center;
             gap: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
             padding: 5px 6px 5px 12px;
             border-radius: 999px;
             font-size: 0.78rem;
-            color: white;
+            color: var(--primary-bg);
         }
 
         .header-user-pill span {
@@ -218,20 +228,41 @@
         }
 
         .header-user-pill button {
-            border: none;
-            background: rgba(239, 68, 68, 0.85);
-            color: white;
+            border: 1px solid var(--border-color);
+            background: none;
+            color: #5A6B75;
             padding: 5px 11px;
             border-radius: 999px;
             font-size: 0.72rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        .header-user-pill button:hover { background: #ef4444; }
+        .header-user-pill button:hover { border-color: #5A6B75; color: var(--primary-bg); }
 
         @media (max-width: 480px) {
             .auth-gate-card { padding: 26px 20px 22px; }
+        }
+
+        /* En pantallas angostas el título largo + la píldora de usuario no
+           entran en una sola fila (la píldora terminaba recortada fuera del
+           viewport). Se apilan en dos filas propias. */
+        @media (max-width: 640px) {
+            .header-inner {
+                flex-wrap: wrap;
+                row-gap: 10px;
+            }
+            header .header-brand div {
+                font-size: 0.95rem;
+            }
+            .header-user-pill {
+                flex-basis: 100%;
+                justify-content: space-between;
+            }
+            .header-user-pill span {
+                max-width: none;
+                flex: 1 1 auto;
+            }
         }
 
         body[data-view="grados"] #view-grados { display: block; }
@@ -256,7 +287,7 @@
 
         .breadcrumb {
             font-size: 0.85rem;
-            color: #64748b;
+            color: var(--austin-texto-suave);
             margin-bottom: 18px;
         }
 
@@ -289,7 +320,7 @@
 
         .tile-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.14);
+            box-shadow: 0 10px 24px rgba(38, 52, 62, 0.12);
         }
 
         /* Grilla de grados: 3 columnas fijas (2 filas para los 6 grados),
@@ -316,7 +347,7 @@
         }
 
         .btn-back-home {
-            background: #64748b;
+            background: var(--austin-texto-suave);
             color: white;
             border: none;
             padding: 6px 12px;
@@ -342,7 +373,7 @@
         }
 
         .history-card h4 { margin: 0 0 6px 0; font-size: 0.98rem; color: var(--primary-bg); }
-        .history-card p { margin: 2px 0; font-size: 0.82rem; color: #64748b; }
+        .history-card p { margin: 2px 0; font-size: 0.82rem; color: var(--austin-texto-suave); }
 
         .history-badge {
             display: inline-flex;
@@ -350,10 +381,9 @@
             padding: 4px 8px;
             border-radius: 999px;
             background: #eff6ff;
-            color: #2563eb;
+            color: var(--austin-petroleo-medio);
             font-size: 0.7rem;
             font-weight: 700;
-            text-transform: uppercase;
             letter-spacing: 0.04em;
         }
 
@@ -363,7 +393,7 @@
             border: 1px dashed rgba(148, 163, 184, 0.45);
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.6);
-            color: #64748b;
+            color: var(--austin-texto-suave);
             font-size: 0.9rem;
             line-height: 1.5;
         }
@@ -398,7 +428,7 @@
 
         .panel-resumen-hint {
             margin: 0 0 14px;
-            color: #64748b;
+            color: var(--austin-texto-suave);
             font-size: 0.8rem;
         }
 
@@ -412,7 +442,7 @@
             transition: background 0.15s ease;
         }
 
-        .ultima-presentacion-fila:hover { background: #f1f5f9; }
+        .ultima-presentacion-fila:hover { background: var(--austin-azul-claro); }
 
         .ultima-presentacion-fila + .ultima-presentacion-fila {
             border-top: 1px solid rgba(148, 163, 184, 0.18);
@@ -438,7 +468,7 @@
 
         .ultima-presentacion-texto span {
             font-size: 0.78rem;
-            color: #64748b;
+            color: var(--austin-texto-suave);
         }
 
         .btn-ver-todas {
@@ -465,8 +495,7 @@
         }
         .panel-resumen-compacto h3 {
             font-size: 0.78rem;
-            color: #64748b;
-            text-transform: uppercase;
+            color: var(--austin-texto-suave);
             letter-spacing: 0.05em;
             margin-bottom: 2px;
         }
@@ -495,7 +524,7 @@
         }
 
         .grafico-card h3 { margin: 0 0 4px; color: var(--primary-bg); font-size: 1.05rem; }
-        .grafico-hint { margin: 0 0 14px; color: #64748b; font-size: 0.8rem; }
+        .grafico-hint { margin: 0 0 14px; color: var(--austin-texto-suave); font-size: 0.8rem; }
 
         .donut-wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 
@@ -503,13 +532,13 @@
         .donut-legend-item { display: flex; align-items: center; gap: 8px; }
         .donut-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
         .donut-legend-label { color: var(--text-main); font-weight: 600; }
-        .donut-legend-count { color: #64748b; font-size: 0.78rem; margin-left: auto; }
+        .donut-legend-count { color: var(--austin-texto-suave); font-size: 0.78rem; margin-left: auto; }
 
         .donut-center-label { font-size: 1.5rem; font-weight: 800; fill: var(--primary-bg); }
-        .donut-center-sublabel { font-size: 0.6rem; fill: #64748b; text-transform: uppercase; letter-spacing: 0.04em; }
+        .donut-center-sublabel { font-size: 0.6rem; fill: var(--austin-texto-suave); letter-spacing: 0.04em; }
 
         .barra-valor { font-size: 0.72rem; font-weight: 700; fill: var(--primary-bg); }
-        .barra-eje-label { font-size: 0.72rem; fill: #64748b; }
+        .barra-eje-label { font-size: 0.72rem; fill: var(--austin-texto-suave); }
 
         /* Insignia "Reedición": eje aparte del semáforo (color+texto propios,
            nunca solo color) que marca combinaciones con más de una versión
@@ -564,7 +593,7 @@
            panel-graficos, arriba de "Últimas presentaciones". */
         .panel-desglose {
             background: white;
-            border: 1px solid rgba(37, 99, 235, 0.25);
+            border: 1px solid var(--austin-borde);
             border-left: 4px solid var(--accent-blue);
             border-radius: 12px;
             padding: 14px 18px;
@@ -584,20 +613,20 @@
         .desglose-cerrar {
             background: none;
             border: none;
-            color: #64748b;
+            color: var(--austin-texto-suave);
             font-size: 0.9rem;
             cursor: pointer;
             padding: 2px 6px;
             border-radius: 4px;
         }
 
-        .desglose-cerrar:hover { background: #f1f5f9; color: var(--text-main); }
+        .desglose-cerrar:hover { background: var(--austin-azul-claro); color: var(--text-main); }
 
         /* Segmentos clicables de los gráficos (arcos de la torta, barras,
            filas de leyenda) que despliegan el panel-desglose. */
         .clickable-segment { cursor: pointer; }
         .donut-legend-item.clickable-segment { border-radius: 6px; padding: 3px 4px; margin: -3px -4px; transition: background 0.15s ease; }
-        .donut-legend-item.clickable-segment:hover { background: #f1f5f9; }
+        .donut-legend-item.clickable-segment:hover { background: var(--austin-azul-claro); }
 
         .detalle-meta {
             display: flex;
@@ -610,7 +639,7 @@
             margin-bottom: 18px;
         }
 
-        .detalle-meta div strong { display: block; color: var(--primary-bg); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        .detalle-meta div strong { display: block; color: var(--primary-bg); font-size: 0.75rem; letter-spacing: 0.04em; }
         .detalle-meta div span { font-size: 0.95rem; }
 
         .detalle-content {
@@ -636,7 +665,7 @@
             font-size: 0.9rem;
         }
 
-        .btn-aprobar { background: var(--accent-green); color: white; }
+        .btn-aprobar { background: var(--accent-green); color: var(--austin-petroleo); }
         .btn-cambios { background: #d97706; color: white; }
         .btn-aprobar:disabled, .btn-cambios:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -652,7 +681,7 @@
             font-weight: 700;
             white-space: nowrap;
         }
-        .badge-revision.pending { background: #f1f5f9; color: #64748b; }
+        .badge-revision.pending { background: var(--austin-azul-claro); color: var(--austin-texto-suave); }
         .badge-revision.approved { background: #ecfdf5; color: #059669; }
         .badge-revision.changes_requested { background: #fff7ed; color: #c2410c; }
 
@@ -702,13 +731,15 @@
     </div>
 
     <header>
-        <div class="header-brand">
-            <img src="../austin-eco-bilingual-school-campana-argentina.jpg" alt="Austin Eco Bilingual School">
-            <div>Panel de Coordinadores | PUDs Presentados</div>
-        </div>
-        <div id="header-user-pill" class="header-user-pill">
-            <span id="header-user-email"></span>
-            <button type="button" onclick="cerrarSesionAuth()">Cerrar sesión</button>
+        <div class="header-inner">
+            <div class="header-brand">
+                <img src="../austin-eco-bilingual-school-campana-argentina.jpg" alt="Austin Eco Bilingual School">
+                <div>Panel de Coordinadores | PUDs Presentados</div>
+            </div>
+            <div id="header-user-pill" class="header-user-pill">
+                <span id="header-user-email"></span>
+                <button type="button" onclick="cerrarSesionAuth()">Cerrar sesión</button>
+            </div>
         </div>
     </header>
 
@@ -772,7 +803,9 @@
         </section>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js" integrity="sha384-dl/4LkSyQ4uEucc48NM6VDZLAjLLq9yMzZ5JLXumBq7Ld33XBof73hseOqPhO89+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.17/dist/purify.min.js" integrity="sha384-P0JNneQf81HOl9VwNXK76cQ9VMD6Nfsnepxb0cCOg8+UzEdzgPHAPV4wVQrvYQSx" crossorigin="anonymous"></script>
+    <script src="../austin-ui.js"></script>
     <script>
         const SUPABASE_URL = 'https://kretfnbddhbosacfgdup.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtyZXRmbmJkZGhib3NhY2ZnZHVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0Mjk3MTcsImV4cCI6MjA4NzAwNTcxN30.P0HLqGab3tB5WdsVGYKXEyK572JvthHYFg7iu3MJpgo';
@@ -781,8 +814,9 @@
         // ---- Permisos por coordinador ----
         // `null` en years/subjects significa "sin restricción": el coordinador ve
         // todas las combinaciones. Se completa después del login leyendo la fila
-        // de este coordinador en coordinador_permisos (ver cargarPermisosCoordinador
-        // más abajo) — esa tabla se carga a mano desde Supabase, no hay UI acá.
+        // de este coordinador en coordinadores/coordinador_permiso_grados/
+        // coordinador_permiso_materias (ver cargarPermisosCoordinador más abajo)
+        // — esas tablas se cargan a mano desde Supabase, no hay UI acá.
         window.permisosCoordinador = { years: null, subjects: null };
         window.authUser = null;
 
@@ -803,6 +837,24 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        // Argumento de un onclick="fn(...)" armado con template string.
+        // escapeHtml solo no alcanza: el navegador decodifica &#39; a ' antes
+        // de ejecutar el JS, y un año/materia con comilla (lo carga el
+        // docente) cortaba el string y ejecutaba lo que siguiera. JSON.stringify
+        // arma un literal JS válido y escapeHtml lo protege dentro del atributo.
+        function jsArg(value) {
+            return escapeHtml(JSON.stringify(String(value ?? '')));
+        }
+
+        // content_html lo genera el docente: se filtra antes de mostrarlo acá
+        // (scripts, handlers on*, URLs javascript:). Sin DOMPurify, texto plano.
+        function limpiarHtmlPUD(html) {
+            if (window.DOMPurify) return DOMPurify.sanitize(html || '');
+            const div = document.createElement('div');
+            div.textContent = html || '';
+            return div.innerHTML;
         }
 
         function formatearFecha(iso) {
@@ -828,7 +880,9 @@
 
             const years = [...new Set((data || []).map(row => row.year).filter(Boolean))]
                 .filter(year => tieneAcceso('years', year));
-            years.sort((a, b) => a.localeCompare(b, 'es'));
+            // Orden escolar (salas, primaria, secundaria); lo que no esté en la lista va al final.
+            const pos = y => { const i = ORDEN_GRADOS.indexOf(y); return i === -1 ? 999 : i; };
+            years.sort((a, b) => pos(a) - pos(b) || a.localeCompare(b, 'es'));
             return years;
         }
 
@@ -856,7 +910,7 @@
 
             grid.innerHTML = grados.length > 0
                 ? grados.map(grado => `
-                    <button class="tile-btn" onclick="seleccionarGrado('${escapeHtml(grado)}')">${escapeHtml(grado)}</button>
+                    <button class="tile-btn" onclick="seleccionarGrado(${jsArg(grado)})">${escapeHtml(grado)}</button>
                 `).join('')
                 : '<div class="history-empty-state">Todavía no hay PUDs presentados.</div>';
 
@@ -873,7 +927,7 @@
             const areas = await cargarAreasDisponibles(grado);
             grid.innerHTML = areas.length > 0
                 ? areas.map(area => `
-                    <button class="tile-btn" onclick="seleccionarArea('${escapeHtml(area)}')">${escapeHtml(area)}</button>
+                    <button class="tile-btn" onclick="seleccionarArea(${jsArg(area)})">${escapeHtml(area)}</button>
                 `).join('')
                 : '<div class="history-empty-state">No hay PUDs presentados para este curso.</div>';
         }
@@ -927,7 +981,7 @@
                         <p><strong>Curso:</strong> ${escapeHtml(item.year || '-')} &nbsp;|&nbsp; <strong>Materia:</strong> ${escapeHtml(item.subject || '-')}</p>
                         <p><strong>Presentado:</strong> ${formatearFecha(item.presented_at)}</p>
                     </div>
-                    <button class="btn-abrir" onclick="abrirPUD('${item.id}')">Abrir</button>
+                    <button class="btn-abrir" onclick="abrirPUD(${jsArg(item.id)})">Abrir</button>
                 </div>
             `).join('');
         }
@@ -967,6 +1021,8 @@
         // Primaria se abrevia igual que siempre ("2°"); secundaria suma "Sec."
         // para no confundirse con el mismo número de primaria en el mismo gráfico.
         function abreviarGrado(year) {
+            const sala = /^Sala de (\d) años$/.exec(year || '');
+            if (sala) return `S${sala[1]}`;
             const match = /^(\d+°)\s*(Grado Primaria|Año Secundaria)/.exec(year || '');
             if (!match) return year || '-';
             return match[2] === 'Año Secundaria' ? `${match[1]} Sec.` : match[1];
@@ -1026,7 +1082,7 @@
         // exactamente igual (mismo click-to-open, mismos badges).
         function filaPresentacionHtml(item) {
             return `
-                <div class="ultima-presentacion-fila" onclick="abrirUltimaPresentacion('${escapeHtml(item.subject)}', '${escapeHtml(item.year)}')">
+                <div class="ultima-presentacion-fila" onclick="abrirUltimaPresentacion(${jsArg(item.subject)}, ${jsArg(item.year)})">
                     <span class="ultima-presentacion-indicador">${indicadorPorDias(item.dias)}</span>
                     <span class="ultima-presentacion-texto">
                         <strong>
@@ -1175,6 +1231,7 @@
         // ---- Gráfico de barras: entregas totales por grado ----
 
         const ORDEN_GRADOS = [
+            'Sala de 3 años', 'Sala de 4 años', 'Sala de 5 años',
             '1° Grado Primaria', '2° Grado Primaria', '3° Grado Primaria',
             '4° Grado Primaria', '5° Grado Primaria', '6° Grado Primaria',
             '1° Año Secundaria', '2° Año Secundaria', '3° Año Secundaria',
@@ -1257,7 +1314,7 @@
                 ` : '';
 
                 const yEtiquetaValor = c.reediciones > 0 ? ySegmentoReediciones : ySegmentoPrimeras;
-                const clickHandler = c.total > 0 ? ` class="clickable-segment" onclick="mostrarDesglose('grado', '${escapeHtml(c.grado)}', '${escapeHtml(c.grado)}')"` : '';
+                const clickHandler = c.total > 0 ? ` class="clickable-segment" onclick="mostrarDesglose('grado', ${jsArg(c.grado)}, ${jsArg(c.grado)})"` : '';
 
                 return `
                     <g${clickHandler}>
@@ -1340,7 +1397,9 @@
             // nivel más abajo, así que esa misma ruta relativa hay que corregirla acá.
             const contentHtml = (row.content_html || '')
                 .replace(/src="austin-eco-bilingual-school-campana-argentina\.jpg"/g, 'src="../austin-eco-bilingual-school-campana-argentina.jpg"');
-            document.getElementById('detalle-content').innerHTML = contentHtml || '<p style="color:#94a3b8;">No hay contenido disponible.</p>';
+            document.getElementById('detalle-content').innerHTML = contentHtml
+                ? limpiarHtmlPUD(contentHtml)
+                : '<p style="color:#94a3b8;">No hay contenido disponible.</p>';
             document.body.setAttribute('data-view', 'detalle');
         }
 
@@ -1362,16 +1421,20 @@
         async function aprobarPUD() {
             const row = window.pudSeleccionado;
             if (!row) return;
-            if (!confirm(`¿Aprobar "${row.unit_name || 'este PUD'}"? Va a dejar de figurar como pendiente.`)) return;
+            const ok = await AustinUI.confirmar('Va a dejar de figurar como pendiente.', {
+                titulo: `¿Aprobar "${row.unit_name || 'este PUD'}"?`, aceptar: 'Aprobar PUD'
+            });
+            if (!ok) return;
 
             const { error } = await _supabase
-                .from('pud_history')
-                .update({ review_status: 'approved', review_comment: null, reviewed_at: new Date().toISOString() })
-                .eq('id', row.id);
+                .rpc('revisar_pud_presentado', {
+                    p_id: row.id,
+                    p_review_status: 'approved'
+                });
 
             if (error) {
                 console.error(error);
-                alert('No se pudo registrar la aprobación: ' + error.message);
+                AustinUI.avisar('No se pudo registrar la aprobación.', { tipo: 'error', detalle: error });
                 return;
             }
 
@@ -1385,21 +1448,25 @@
             const row = window.pudSeleccionado;
             if (!row) return;
 
-            const comentario = prompt('¿Qué hay que corregir? (obligatorio, el docente va a ver este texto)');
-            if (comentario === null) return; // canceló el prompt
-            if (!comentario.trim()) {
-                alert('Tenés que escribir qué hay que corregir para poder solicitar cambios.');
-                return solicitarCambios();
-            }
+            const comentario = await AustinUI.pedirTexto({
+                titulo: 'Solicitar cambios',
+                mensaje: 'El docente va a ver este texto junto a su PUD.',
+                etiqueta: '¿Qué hay que corregir?',
+                aceptar: 'Solicitar cambios',
+                validar: v => v.trim() ? '' : 'Escribí qué hay que corregir para poder solicitar cambios.'
+            });
+            if (comentario === null) return; // canceló el diálogo
 
             const { error } = await _supabase
-                .from('pud_history')
-                .update({ review_status: 'changes_requested', review_comment: comentario.trim(), reviewed_at: new Date().toISOString() })
-                .eq('id', row.id);
+                .rpc('revisar_pud_presentado', {
+                    p_id: row.id,
+                    p_review_status: 'changes_requested',
+                    p_review_comment: comentario.trim()
+                });
 
             if (error) {
                 console.error(error);
-                alert('No se pudo registrar la solicitud de cambios: ' + error.message);
+                AustinUI.avisar('No se pudo registrar la solicitud de cambios.', { tipo: 'error', detalle: error });
                 return;
             }
 
@@ -1453,10 +1520,15 @@
         // coordinador todavía). Sin ninguna fila en coordinador_permiso_grados/
         // materias para ese email = sin restricción en ese eje (ve todo).
         async function cargarPermisosCoordinador(email) {
+            // coordinadores.email y las tablas de permisos se guardan en
+            // minúsculas (ver supabase-migration-normalizar-email-coordinador.sql);
+            // normalizamos acá para que un email con mayúsculas en auth.users
+            // (o con espacios) no rompa el match en silencio.
+            const emailNormalizado = (email || '').trim().toLowerCase();
             const { data: coordinador, error: errorCoordinador } = await _supabase
                 .from('coordinadores')
                 .select('email')
-                .eq('email', email)
+                .eq('email', emailNormalizado)
                 .maybeSingle();
 
             if (errorCoordinador) {
@@ -1466,8 +1538,8 @@
             if (!coordinador) return null;
 
             const [{ data: filasGrados, error: errorGrados }, { data: filasMaterias, error: errorMaterias }] = await Promise.all([
-                _supabase.from('coordinador_permiso_grados').select('grado').eq('email', email),
-                _supabase.from('coordinador_permiso_materias').select('materia').eq('email', email)
+                _supabase.from('coordinador_permiso_grados').select('grado').eq('email', emailNormalizado),
+                _supabase.from('coordinador_permiso_materias').select('materia').eq('email', emailNormalizado)
             ]);
 
             if (errorGrados) console.error('Error cargando permisos de grado:', errorGrados);
@@ -1485,7 +1557,7 @@
 
             if (!permisos) {
                 mostrarGate();
-                if (status) status.textContent = 'Tu cuenta todavía no tiene permisos asignados. Pedile al administrador que te dé de alta en coordinador_permisos.';
+                if (status) status.textContent = 'Tu cuenta todavía no tiene permisos asignados. Pedile al administrador que te dé de alta en la tabla coordinadores (revisá también que el email esté bien escrito, sin mayúsculas ni espacios de más).';
                 return;
             }
 
@@ -1496,10 +1568,31 @@
             cargarConteoEntregasPorGrado();
         }
 
+        // Supabase, a propósito, NO distingue "contraseña incorrecta" de "el
+        // usuario no existe" en signInWithPassword (las dos vienen con el
+        // mismo código 'invalid_credentials'): si lo hiciera, cualquiera
+        // podría usar este formulario para averiguar qué emails están dados
+        // de alta como coordinador (user enumeration). Ese caso se deja
+        // genérico a propósito. 'email_not_confirmed' sí es un código aparte
+        // -- no depende de la contraseña -- así que ese lo podemos mostrar
+        // sin ese riesgo.
+        function mensajeErrorLogin(error) {
+            switch (error.code) {
+                case 'email_not_confirmed':
+                    return 'Todavía no confirmaste la cuenta: revisá el mail de invitación (o de confirmación) y tocá el enlace antes de iniciar sesión.';
+                case 'over_email_send_rate_limit':
+                    return 'Se enviaron demasiados correos en poco tiempo. Esperá unos minutos y volvé a intentar.';
+                case 'invalid_credentials':
+                    return 'Correo o contraseña incorrectos. Si todavía no pusiste una contraseña, revisá tu casilla por el mail de invitación, o usá "¿Olvidaste tu contraseña?".';
+                default:
+                    return 'No se pudo iniciar sesión: ' + (error.message || 'error desconocido.');
+            }
+        }
+
         async function iniciarSesionAuth() {
             const email = document.getElementById('auth-email')?.value?.trim();
             const password = document.getElementById('auth-password')?.value;
-            if (!email || !password) return alert('Ingresá tu correo y contraseña.');
+            if (!email || !password) return AustinUI.avisar('Ingresá tu correo y contraseña.', { tipo: 'error' });
 
             const status = document.getElementById('auth-status');
             if (status) status.textContent = 'Iniciando sesión…';
@@ -1507,11 +1600,12 @@
             const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
             if (error) {
                 console.error(error);
-                if (status) status.textContent = 'No se pudo iniciar sesión. Revisá tus datos.';
-                return alert('No se pudo iniciar sesión: ' + error.message);
+                if (status) status.textContent = mensajeErrorLogin(error);
+                return;
             }
 
             window.authUser = data.user;
+            window.usuarioAppCargadaId = data.user.id; // evita que SIGNED_IN lo cargue de nuevo
             actualizarUIAuth();
             await mostrarApp();
         }
@@ -1528,7 +1622,7 @@
 
         async function recuperarPasswordAuth() {
             const email = document.getElementById('auth-email')?.value?.trim();
-            if (!email) return alert('Ingresá tu correo electrónico en el campo de arriba y volvé a tocar el enlace.');
+            if (!email) return AustinUI.avisar('Escribí tu correo en el campo de arriba y volvé a tocar el enlace.', { tipo: 'error' });
 
             const status = document.getElementById('auth-status');
             if (status) status.textContent = 'Enviando correo de recuperación…';
@@ -1540,28 +1634,30 @@
             if (error) {
                 console.error(error);
                 if (status) status.textContent = 'No se pudo enviar el correo de recuperación.';
-                return alert('No se pudo enviar el correo de recuperación: ' + error.message);
+                return AustinUI.avisar('No se pudo enviar el correo de recuperación.', { tipo: 'error', detalle: error });
             }
 
             if (status) status.textContent = 'Te enviamos un correo con un enlace para restablecer tu contraseña.';
-            alert('Revisá tu correo: te enviamos un enlace para restablecer tu contraseña.');
+            AustinUI.avisar('Revisá tu correo: te enviamos un enlace para restablecer tu contraseña.');
         }
 
         async function manejarRecuperacionPassword() {
-            const nuevaPassword = prompt('Ingresá tu nueva contraseña (mínimo 6 caracteres):');
+            const nuevaPassword = await AustinUI.pedirTexto({
+                titulo: 'Elegí una contraseña nueva',
+                etiqueta: 'Contraseña nueva (mínimo 8 caracteres)',
+                tipo: 'password',
+                aceptar: 'Guardar contraseña',
+                validar: v => v.length >= 8 ? '' : 'La contraseña debe tener al menos 8 caracteres.'
+            });
             if (!nuevaPassword) return;
-            if (nuevaPassword.length < 6) {
-                alert('La contraseña debe tener al menos 6 caracteres.');
-                return manejarRecuperacionPassword();
-            }
 
             const { error } = await _supabase.auth.updateUser({ password: nuevaPassword });
             if (error) {
                 console.error(error);
-                return alert('No se pudo actualizar la contraseña: ' + error.message);
+                return AustinUI.avisar('No se pudo actualizar la contraseña.', { tipo: 'error', detalle: error });
             }
 
-            alert('Contraseña actualizada correctamente. Ya podés usar el panel.');
+            AustinUI.avisar('Contraseña actualizada. Ya podés usar el panel.');
         }
 
         // Id del usuario para el que ya se cargó el panel (permisos + vista de
@@ -1604,7 +1700,8 @@
             if (nuevoUser.id === window.usuarioAppCargadaId) return;
 
             window.usuarioAppCargadaId = nuevoUser.id;
-            mostrarApp();
+            // Diferido: consultar Supabase dentro del callback puede bloquear supabase-js.
+            setTimeout(mostrarApp, 0);
         });
 
         inicializarSesionAuth();

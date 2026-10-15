@@ -1,0 +1,7 @@
+# Netlify: rutas que no deben quedar públicas.
+# Migraciones SQL: describen la base; se corren a mano en Supabase, no se sirven.
+/supabase/*              /    301!
+/.github/*               /    301!
+# Versiones viejas o en desarrollo (ver supabase/ y la pestaña Adaptaciones "Pronto").
+/pud-developer-fixed.html  /  301!
+/indexADAPT.html           /  301!
