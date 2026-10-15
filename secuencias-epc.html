@@ -435,15 +435,35 @@
 
         const prompt = esSalaInicial(nivel)
             ? promptSecuenciaInicial(objetivo, extras, nivel, idioma === 'en')
-            : `Actúa como un experto en EpC (Enseñanza para la Comprensión, Harvard Project Zero) con experiencia en planificación didáctica para educación bilingüe.
+            : promptSecuencia(objetivo, extras, metaFrase);
 
-Tu tarea es generar una SECUENCIA DIDÁCTICA estructurada en exactamente 5 pasos según el marco EpC, a partir del siguiente objetivo o tópico:
+        document.getElementById('output-box').textContent = prompt;
+        objetivoDelUltimoPrompt = objetivo;
+        PasosPrompt.generado();
+        avisarSiHayCambios();
+    }
+
+    // Primaria y Secundaria: los 5 pasos EpC como estructura, desarrollados
+    // en 5 a 10 clases de 60 minutos con todo el material para dar cada una
+    // (textos, preguntas, rutinas, claves). La IA entrega por partes: el mapa
+    // de la secuencia con la clase 1, y una clase más cada vez que el docente
+    // escribe «continuar», para que la respuesta no se corte ni se resuma.
+    function promptSecuencia(objetivo, extras, metaFrase) {
+        return `Actúa como un experto en EpC (Enseñanza para la Comprensión, Harvard Project Zero) con experiencia en planificación didáctica para educación bilingüe.
+
+Tu tarea es diseñar una SECUENCIA DIDÁCTICA completa y lista para dar en el aula, estructurada en los 5 pasos del marco EpC, a partir del siguiente objetivo o tópico:
 
 ---
 ${objetivo}
 ---${extras}
 
-ESTRUCTURA OBLIGATORIA DE LOS 5 PASOS:
+PRINCIPIO CENTRAL:
+- La secuencia es una línea de indagación, no una sucesión de temas sueltos. Se organiza alrededor de una pregunta esencial que plantea un problema intelectual genuino para investigar.
+- Cada clase aporta algo necesario para responder esa pregunta. Los alumnos avanzan desde sus saberes previos y supuestos iniciales hacia interpretaciones, conexiones y conclusiones mejor fundamentadas.
+- Desarrollá el contenido, no solo la descripción de las actividades. El docente tiene que poder dar cada clase sin preparar materiales ni completar lo que falta. Por ejemplo, en lugar de escribir «Los alumnos leen un texto sobre el patrimonio cultural y responden preguntas», escribí el texto completo, el vocabulario esencial, las preguntas, la clave de respuestas y la consigna que conecta la lectura con la pregunta esencial. Aplicá lo mismo a debates, análisis de fuentes, casos, imágenes e investigaciones.
+
+ESTRUCTURA OBLIGATORIA: 5 PASOS EpC, DE 5 A 10 CLASES DE 60 MINUTOS
+Los 5 pasos van en este orden. Cada paso se desarrolla en una o más clases; en total, entre 5 y 10 clases. Cada clase dura 60 minutos (1 hora reloj). Distribuí las clases según el trabajo intelectual que pide cada paso.
 
 PASO 1 — EXPLORACIÓN (Tópico Generativo)
 Activación de saberes previos y conexión con la experiencia del alumno. El tópico debe ser genuinamente interesante, central a la disciplina y accesible. Incluí una pregunta generativa potente que abra el pensamiento.
@@ -460,26 +480,69 @@ El alumno demuestra su comprensión a través de un producto auténtico y concre
 PASO 5 — EVALUACIÓN FINAL (Valoración Continua + Metacognición)
 Reflexión sobre el propio aprendizaje. Criterios de evaluación compartidos con el alumno. Cierre que consolida la comprensión y abre nuevas preguntas.
 
-FORMATO DE ENTREGA:
-Para cada paso incluí:
-- Nombre y subtítulo descriptivo
-- Duración estimada
-- Pregunta guía del paso
-- 2 a 3 actividades concretas con sugerencia para el docente
-- Recursos necesarios
-- Cómo se evalúa la comprensión en ese paso
-- Conexión explícita con el marco EpC
+PROGRESIÓN ENTRE CLASES:
+- Diseñá la secuencia completa antes de desarrollar cada clase en detalle.
+- La progresión es acumulativa: los conceptos, el vocabulario y la evidencia de clases anteriores se retoman y profundizan cuando corresponde.
+- Como guía flexible (no es una secuencia obligatoria de 8 clases): Observar → Preguntar → Comprender → Investigar → Comparar → Aplicar → Evaluar → Concluir. Adaptala a la materia y al tema.
+- Evitá la repetición disfrazada de progresión: cada clase nueva presenta un caso nuevo, profundiza un concepto, desafía un supuesto o pide transferir lo comprendido.
 
-Al inicio del documento indicá:
-- Título de la secuencia
-- Meta de comprensión central (una oración que comience con "${metaFrase}")
+FORMA DE ENTREGA: POR PARTES
+Primera respuesta:
+1. Título de la secuencia.
+2. Meta de comprensión central: una oración que comience con "${metaFrase}".
+3. Pregunta esencial de la secuencia.
+4. Mapa de la secuencia: una tabla con una fila por clase y estas columnas: N.º de clase, paso EpC, qué deben saber ya los alumnos, conocimiento o distinción conceptual nueva, evidencia/ejemplo/experiencia que la hace comprensible, operación de pensamiento que practican, cómo avanza la pregunta esencial y qué evidencia de aprendizaje informa la clase siguiente.
+5. La Clase 1 completa.
+6. Al final, una línea en el idioma de la secuencia que invite al docente a escribir «continuar» (o «continue») para recibir la Clase 2.
+Respuestas siguientes: cada vez que el docente escriba «continuar» o «continue», entregá la clase siguiente completa, fiel al mapa, sin resumir ni acortar, y terminá con la misma línea para la clase que sigue. La última clase (Paso 5) cierra la secuencia: valoración del producto final con sus criterios y reflexión sobre cómo cambió el pensamiento de los alumnos.
+
+CONTENIDO DE CADA CLASE:
+- Encabezado: Clase N de T · paso EpC (nombre y subtítulo) · pregunta guía del paso · objetivo de la clase · cómo avanza la pregunta esencial · conexión explícita con el marco EpC.
+- Etapas con su duración en minutos, que sumen 60. Asigná el tiempo según el trabajo intelectual: una lectura con análisis de evidencia necesita más tiempo que una actividad de recuperación inicial. No fuerces la misma cantidad de etapas en todas las clases ni cargues más actividades de las que entran en una hora; dejá tiempo para procesar, discutir, responder y reflexionar.
+- En cada actividad: qué hace el docente, qué hacen los alumnos (solos, en parejas o con toda la clase), qué busca lograr y la consigna textual para los alumnos.
+- Todo el material escrito completo: textos adaptados a la edad, vocabulario esencial cuando sirva, preguntas completas, consignas de discusión, casos y fuentes. Nunca uses consignas vagas como «discutan el tema», «investiguen» o «analicen la fuente» sin dar las preguntas, el material y el proceso.
+- Recursos que se proyectan o se usan directo: textos, imágenes, pizarrón, cuaderno, discusión. No pidas tarjetas, recortes, fichas elaboradas, materiales especiales ni disposiciones complicadas del aula.
+- Si un recurso no puede ir dentro de la clase, dá un link directo que hayas verificado o una descripción precisa para encontrarlo. Nunca inventes fuentes ni digas que verificaste un link si no pudiste hacerlo.
+
+PREGUNTAS (cuando la actividad las pida), tres tipos complementarios:
+A. De comprensión, cerradas: opción múltiple, unir, ordenar, verdadero/falso con corrección o respuesta breve. Se tienen que poder responder con el material dado.
+B. Abiertas, de interpretación y conexión: por qué importa algo, comparar casos, causas y consecuencias, conectar ideas, considerar otra perspectiva.
+C. De inferencia y evidencia: sacar conclusiones, distinguir hechos de interpretaciones, identificar la evidencia que sostiene una idea, evaluar explicaciones en competencia.
+Que avancen de la comprensión al razonamiento: no todas abiertas, pero sin que dominen las de memoria. Incluí la clave de respuestas de las cerradas y, para las abiertas, una respuesta modelo o los criterios de una buena respuesta; aceptá conclusiones distintas si están bien fundamentadas.
+Adaptá la complejidad del lenguaje al nivel de los alumnos sin quitar complejidad conceptual: lenguaje simple no significa pensamiento simple. Si la secuencia es en inglés como lengua extranjera, usá inglés accesible, oraciones claras, vocabulario andamiado y sentence starters cuando ayuden.
+
+RUTINAS DE PENSAMIENTO (Project Zero):
+Elegí cada rutina según su propósito cognitivo; por ejemplo: See, Think, Wonder; Think, Puzzle, Explore; Tug-of-War; Claim, Support, Question; Circle of Viewpoints; Connect, Extend, Challenge; I Used to Think… Now I Think…; What Makes You Say That? Preferí las que solo necesitan pizarrón, cuaderno y discusión. No las repitas mecánicamente ni las incluyas solo para que la clase parezca de indagación.
+Cada vez que uses una, indicá: su propósito, las instrucciones textuales del docente, los prompts textuales que responden los alumnos, qué se hace en forma individual, en parejas o con toda la clase, cómo el docente guía la discusión y qué tiene que buscar en las respuestas.
+
+CASOS, EVIDENCIA Y PERSPECTIVAS:
+- En Ciencias Sociales, Historia, Geografía y Ciudadanía, priorizá casos sustantivos que iluminen conceptos más amplios, con contexto histórico, fechas, lugares y actores; fuentes primarias o secundarias; mapas, fotos, objetos, documentos o datos; interpretaciones en disputa y dilemas éticos o sociales cuando existan; conexiones con el contexto de los alumnos; y momentos para distinguir hechos establecidos de afirmaciones discutidas.
+- No fabriques controversia donde no hace falta. En temas disputados (hechos históricos, soberanía, propiedad), presentá las perspectivas con equidad y exactitud, sin dar opiniones sin respaldo como hechos ni poner al mismo nivel posiciones con distinto respaldo en la evidencia.
+- En las demás materias, aplicá el mismo principio de evidencia sustantiva e indagación con los métodos propios de la disciplina.
+
+IMÁGENES:
+Cuando una imagen mejore el aprendizaje, usala como recurso y no como decoración. Para cada actividad con imagen: la imagen, una fuente directa verificada o una descripción de búsqueda precisa; el contexto necesario para interpretarla; consignas de observación concretas; preguntas que distingan lo que se ve de lo que se infiere; y la conexión con el objetivo de la clase. Preferí imágenes reales: objetos, sitios históricos, mapas, documentos, fenómenos científicos. Nunca le pidas al docente que arme una colección de imágenes o tarjetas.
+
+EVALUACIÓN FORMATIVA:
+- Integrala en todas las clases: preguntas de recuperación, respuestas a una lectura, justificación oral, ejercicios de afirmación y evidencia, comparaciones, tickets de salida, conclusiones breves escritas o reflexión sobre cómo cambió el propio pensamiento.
+- Para cada instancia, indicá qué comprensión o error frecuente chequea el docente y cómo el resultado influye en la clase siguiente.
+- El producto final (Paso 4) demuestra lo aprendido en toda la secuencia: por ejemplo, una recomendación fundamentada en evidencia, un expediente de caso, una comparación, una propuesta o una presentación.
+- Evaluá la calidad de la comprensión, la evidencia y el razonamiento, no la presentación artística ni la cantidad de texto escrito.
+
+CONTROL DE CALIDAD ANTES DE ENTREGAR CADA PARTE (no lo muestres; si algo no se cumple, corregilo antes de responder):
+- La pregunta esencial guía la secuencia y las clases forman una progresión coherente.
+- Cada clase tiene contenido sustantivo: textos, preguntas y actividades completos.
+- Hay equilibrio entre preguntas cerradas de comprensión y preguntas de razonamiento.
+- Las rutinas de pensamiento están desarrolladas, no solo nombradas.
+- Las imágenes y los recursos externos se pueden usar.
+- Los tiempos son realistas y suman 60 minutos por clase.
+- El docente casi no necesita preparar nada.
+- Hay claves de respuestas y criterios de evaluación donde hacen falta.
+- Actividades, objetivos y evaluación están alineados.
+- Los alumnos aplican, conectan y revisan su pensamiento.
+- El producto final sintetiza lo aprendido en la secuencia.
 
 El output debe estar listo para usar en el aula, con lenguaje claro y preciso. No agregues introducciones ni aclaraciones metodológicas dirigidas al docente fuera del formato solicitado.`;
-
-        document.getElementById('output-box').textContent = prompt;
-        objetivoDelUltimoPrompt = objetivo;
-        PasosPrompt.generado();
-        avisarSiHayCambios();
     }
 
     // Jardín: los mismos 5 pasos EpC, traducidos a momentos de juego para
