@@ -65,7 +65,19 @@ await esperar('correo de otro dominio no puede registrarse',
 await esperar('crear_coordinador rechaza a un visitante sin sesión',
   async () => (await rpc('crear_coordinador', { p_email: 'x@ejemplo.com', p_nombre: 'x' })).status >= 400);
 
-for (const tabla of ['allowed_emails', 'coordinadores', 'directores', 'pud_history', 'coordinador_permiso_materias', 'user_progress', 'quiz_answers', 'rubricas']) {
+// Funciones que solo se usan con sesión iniciada (Security Advisor)
+for (const [fn, cuerpo] of [
+  ['aldia_seguimiento_capsulas', {}],
+  ['director_onboarding_overview', {}],
+  ['completar_paso', { p_step_id: 'x', p_answers: {} }],
+  ['revisar_pud_presentado', { p_id: '00000000-0000-0000-0000-000000000000', p_review_status: 'approved', p_review_comment: null }]
+]) {
+  await esperar(`función solo con sesión: ${fn}`, async () => (await rpc(fn, cuerpo)).status >= 400);
+}
+
+// Tablas privadas de Austin y del nivelador de inglés (otro sistema, cerrado)
+for (const tabla of ['allowed_emails', 'coordinadores', 'directores', 'pud_history', 'coordinador_permiso_materias', 'user_progress', 'quiz_answers', 'rubricas',
+                     'preguntas', 'preguntas_publicas', 'historial_tests', 'resultados', 'perfiles']) {
   await esperar(`tabla privada cerrada: ${tabla}`, async () => {
     const r = await leer(`${tabla}?select=*&limit=1`);
     return r.status >= 400 || (await r.json()).length === 0;
