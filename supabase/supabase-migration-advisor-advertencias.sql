@@ -19,8 +19,8 @@
 --   que normaliza nombres de áreas; el riesgo es bajo.
 -- - "RLS Policy Always True" en areas: cualquier docente con sesión puede
 --   crear un área nueva desde Planificación; es el comportamiento buscado.
--- - preguntas, historial_tests y preguntas_publicas (prueba de nivel):
---   pendientes hasta confirmar cómo se usa esa aplicación.
+-- - preguntas, historial_tests y preguntas_publicas (nivelador de inglés,
+--   otro sistema): se cierran en supabase-migration-cerrar-nivelador.sql.
 -- =========================================================
 
 BEGIN;
