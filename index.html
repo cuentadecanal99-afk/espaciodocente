@@ -3106,6 +3106,43 @@
         // Todo lo que viene del JSON de la IA se escapa: ese HTML se guarda en
         // pud_history y después lo abren coordinadores y dirección, así que un
         // texto con <script>/<img onerror> no puede terminar ejecutándose allá.
+        // Títulos y siglas del PUD en el idioma en que la IA lo redactó.
+        // Los valores del JSON (dimension, upt) no cambian: solo cómo se muestran.
+        const ETIQUETAS_PUD = {
+            en: {
+                year: 'YEAR', section: 'SECTION', subject: 'SUBJECT', teacher: 'TEACHER', teacherPh: 'Type your name...',
+                throughlines: 'THROUGHLINES', topic: 'GENERATIVE TOPIC', metas: 'UNDERSTANDING GOALS',
+                desempenos: 'PERFORMANCES AND ASSESSMENT', colDesempeno: 'Understanding Performances + Assessment',
+                colUg: 'UG', colUpt: 'UPT', colMi: 'MI', colTd: 'TD',
+                assessment: 'Assessment', finalProject: 'FINAL PROJECT', todas: 'All', prefijoMeta: 'UG',
+                dimensiones: {},
+                upt: { E: 'E', I: 'GI', IG: 'GI', GI: 'GI', PF: 'FP', FP: 'FP' }
+            },
+            es: {
+                year: 'AÑO', section: 'SECCIÓN', subject: 'MATERIA', teacher: 'DOCENTE', teacherPh: 'Escriba su nombre...',
+                throughlines: 'HILOS CONDUCTORES', topic: 'TÓPICO GENERATIVO', metas: 'METAS DE COMPRENSIÓN',
+                desempenos: 'DESEMPEÑOS Y EVALUACIÓN', colDesempeno: 'Desempeños de comprensión + Evaluación',
+                colUg: 'MC', colUpt: 'Etapa', colMi: 'IM', colTd: 'TD',
+                assessment: 'Evaluación', finalProject: 'PROYECTO FINAL', todas: 'Todas', prefijoMeta: 'MC',
+                dimensiones: { KNOWLEDGE: 'CONOCIMIENTO', METHOD: 'MÉTODO', METHODS: 'MÉTODOS', PURPOSE: 'PROPÓSITO', PURPOSES: 'PROPÓSITOS', COMMUNICATION: 'COMUNICACIÓN' },
+                upt: { E: 'E', I: 'I', IG: 'I', GI: 'I', PF: 'PF', FP: 'PF' }
+            }
+        };
+
+        // Idioma del PUD: el que pidió el prompt (meta.lang) o, en PUDs sin ese
+        // dato, el que se detecta en el texto que redactó la IA.
+        function idiomaDelPud(raw) {
+            const lang = raw?.meta?.lang;
+            if (lang === 'en' || lang === 'es') return lang;
+            const textos = [
+                raw?.topic,
+                ...(Array.isArray(raw?.throughlines) ? raw.throughlines : []),
+                ...(Array.isArray(raw?.understanding_goals) ? raw.understanding_goals.flatMap(u => [u?.text, u?.question]) : []),
+                ...(Array.isArray(raw?.performances) ? raw.performances.flatMap(p => [p?.title, p?.description]) : [])
+            ].filter(t => typeof t === 'string');
+            return detectarIdioma({ raw_input: textos.join(' ') });
+        }
+
         const renderAustinPUD = (raw) => {
             const e = escapeHtml;
             const lista = (v) => Array.isArray(v) ? v : [];
@@ -3117,11 +3154,16 @@
                 performances: lista(raw.performances),
                 final_project: raw.final_project || {}
             };
+            const t = ETIQUETAS_PUD[idiomaDelPud(raw)];
+            const dimension = (d) => t.dimensiones[String(d || '').trim().toUpperCase()] || d;
+            const codigoUpt = (c) => t.upt[String(c || '').trim().toUpperCase()] || c;
+            const idMeta = (id) => String(id ?? '').replace(/^(UG|MC)\b/i, t.prefijoMeta);
+
             const hilosHtml = data.throughlines.map((h, i) => `<strong>${i + 1}.</strong> ${e(h)}<br>`).join('');
             const metasHtml = data.understanding_goals.map((ug, i) => `
                 <tr data-meta-id="${e(ug.uid || 'm' + (i + 1))}">
-                    <td style="border: 1pt solid #000; padding: 10px; width: 55%;"><strong>${e(ug.id)}:</strong> ${e(ug.text)}</td>
-                    <td style="border: 1pt solid #000; padding: 10px; width: 15%; text-align: center; font-weight: bold; background-color: #f1f8e9;">${e(ug.dimension)}</td>
+                    <td style="border: 1pt solid #000; padding: 10px; width: 55%;"><strong>${e(idMeta(ug.id))}:</strong> ${e(ug.text)}</td>
+                    <td style="border: 1pt solid #000; padding: 10px; width: 15%; text-align: center; font-weight: bold; background-color: #f1f8e9;">${e(dimension(ug.dimension))}</td>
                     <td style="border: 1pt solid #000; padding: 10px;">${e(ug.question)}</td>
                 </tr>
             `).join('');
@@ -3129,10 +3171,10 @@
             const desempenosHtml = data.performances.map((p, i) => `
                 <tr data-desempeno-id="${e(p.uid || 'd' + (i + 1))}">
                     <td style="border: 1pt solid #000; padding: 10px;">
-                        <strong>${e(p.title)}:</strong> ${e(p.description)}<br><strong>Assessment:</strong> ${e(p.assessment)}
+                        <strong>${e(p.title)}:</strong> ${e(p.description)}<br><strong>${t.assessment}:</strong> ${e(p.assessment)}
                     </td>
                     <td style="border: 1pt solid #000; text-align: center;">${e(p.ug)}</td>
-                    <td class="pud-desempeno-upt" style="border: 1pt solid #000; text-align: center;">${e(p.upt)}</td>
+                    <td class="pud-desempeno-upt" style="border: 1pt solid #000; text-align: center;">${e(codigoUpt(p.upt))}</td>
                     <td style="border: 1pt solid #000; text-align: center;">${e(p.mi)}</td>
                     <td style="border: 1pt solid #000; text-align: center;">${e(p.td)}</td>
                 </tr>
@@ -3157,44 +3199,44 @@
 
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr style="font-size: 10pt;">
-                        <td style="padding: 8px; border: 1pt solid #000; width: 15%;"><strong>AÑO :</strong></td>
+                        <td style="padding: 8px; border: 1pt solid #000; width: 15%;"><strong>${t.year} :</strong></td>
                         <td id="render-year" style="padding: 8px; border: 1pt solid #000; width: 35%;" contenteditable="true">${e(data.meta.year)}</td>
-                        <td style="padding: 8px; border: 1pt solid #000; width: 15%;"><strong>SECCIÓN :</strong></td>
+                        <td style="padding: 8px; border: 1pt solid #000; width: 15%;"><strong>${t.section} :</strong></td>
                         <td id="render-section" style="padding: 8px; border: 1pt solid #000; width: 35%;" contenteditable="true">${e(data.meta.section)}</td>
                     </tr>
                     <tr style="font-size: 10pt;">
-                        <td style="padding: 8px; border: 1pt solid #000;"><strong>MATERIA :</strong></td>
+                        <td style="padding: 8px; border: 1pt solid #000;"><strong>${t.subject} :</strong></td>
                         <td id="render-subject" style="padding: 8px; border: 1pt solid #000;">${e(data.meta.subject)}</td>
-                        <td style="padding: 8px; border: 1pt solid #000;"><strong>DOCENTE :</strong></td>
-                        <td id="render-docente" style="padding: 8px; border: 1pt solid #000;" contenteditable="true" placeholder="Escriba su nombre..."></td>
+                        <td style="padding: 8px; border: 1pt solid #000;"><strong>${t.teacher} :</strong></td>
+                        <td id="render-docente" style="padding: 8px; border: 1pt solid #000;" contenteditable="true" placeholder="${t.teacherPh}"></td>
                     </tr>
                 </table>
 
-                <div class="pud-section-title" style="background-color: #e8f5e9; padding: 10px; font-weight: bold; border-top: 1pt solid #000; border-bottom: 1pt solid #000; font-size: 11pt; color: #2e7d32;">THROUGHLINES:</div>
+                <div class="pud-section-title" data-seccion="throughlines" style="background-color: #e8f5e9; padding: 10px; font-weight: bold; border-top: 1pt solid #000; border-bottom: 1pt solid #000; font-size: 11pt; color: #2e7d32;">${t.throughlines}:</div>
                 <div style="padding: 15px; border-bottom: 1pt solid #000; font-size: 10.5pt; line-height: 1.6;">${hilosHtml}</div>
 
-                <div class="pud-section-title" style="background-color: #e8f5e9; padding: 10px; font-weight: bold; border-bottom: 1pt solid #000; font-size: 11pt; color: #2e7d32;">TOPIC:</div>
+                <div class="pud-section-title" data-seccion="topic" style="background-color: #e8f5e9; padding: 10px; font-weight: bold; border-bottom: 1pt solid #000; font-size: 11pt; color: #2e7d32;">${t.topic}:</div>
                 <div style="padding: 20px; border-bottom: 1pt solid #000; text-align: center; font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">"${e(data.topic)}"</div>
 
-                <div class="pud-section-title" style="background-color: #e8f5e9; padding: 10px; font-weight: bold; border-bottom: 1pt solid #000; font-size: 11pt; color: #2e7d32;">UNDERSTANDING GOALS:</div>
+                <div class="pud-section-title" data-seccion="metas" style="background-color: #e8f5e9; padding: 10px; font-weight: bold; border-bottom: 1pt solid #000; font-size: 11pt; color: #2e7d32;">${t.metas}:</div>
                 <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">${metasHtml}</table>
 
-                <div class="pud-section-title" style="background-color: #e0e0e0; padding: 10px; font-weight: bold; border-top: 1pt solid #000; border-bottom: 1pt solid #000; font-size: 11pt;">PERFORMANCES AND ASSESSMENT:</div>
+                <div class="pud-section-title" data-seccion="desempenos" style="background-color: #e0e0e0; padding: 10px; font-weight: bold; border-top: 1pt solid #000; border-bottom: 1pt solid #000; font-size: 11pt;">${t.desempenos}:</div>
                 <table style="width: 100%; border-collapse: collapse; font-size: 9pt;">
                     <tr style="background-color: #f2f2f2; font-weight: bold; text-align: center;">
-                        <td style="border: 1pt solid #000; padding: 8px;">Understanding Performances + Assessment</td>
-                        <td style="border: 1pt solid #000; width: 40px;">UG</td>
-                        <td style="border: 1pt solid #000; width: 40px;">UPT</td>
-                        <td style="border: 1pt solid #000; width: 50px;">MI</td>
-                        <td style="border: 1pt solid #000; width: 60px;">TD</td>
+                        <td style="border: 1pt solid #000; padding: 8px;">${t.colDesempeno}</td>
+                        <td style="border: 1pt solid #000; width: 40px;">${t.colUg}</td>
+                        <td style="border: 1pt solid #000; width: 40px;">${t.colUpt}</td>
+                        <td style="border: 1pt solid #000; width: 50px;">${t.colMi}</td>
+                        <td style="border: 1pt solid #000; width: 60px;">${t.colTd}</td>
                     </tr>
                     ${desempenosHtml}
                     <tr data-desempeno-id="pf" style="background-color: #fff9c4;">
                         <td style="border: 1pt solid #000; padding: 10px;">
-                            <strong>FINAL PROJECT: ${e(data.final_project.title)}</strong><br>${e(data.final_project.description)}
+                            <strong>${t.finalProject}: ${e(data.final_project.title)}</strong><br>${e(data.final_project.description)}
                         </td>
-                        <td style="border: 1pt solid #000; text-align: center;">All</td>
-                        <td style="border: 1pt solid #000; text-align: center;">PF</td>
+                        <td style="border: 1pt solid #000; text-align: center;">${t.todas}</td>
+                        <td style="border: 1pt solid #000; text-align: center;">${codigoUpt('PF')}</td>
                         <td style="border: 1pt solid #000; text-align: center;">${e(data.final_project.mi)}</td>
                         <td style="border: 1pt solid #000; text-align: center;">${e(data.final_project.td)}</td>
                     </tr>
@@ -3380,7 +3422,7 @@ DATOS DE ENTRADA:
 
 ESTRUCTURA JSON REQUERIDA DE SALIDA:
 {
-  "meta": { "year": "${datosUsuario.year}", "section": "", "subject": "${datosUsuario.subject}" },
+  "meta": { "year": "${datosUsuario.year}", "section": "", "subject": "${datosUsuario.subject}", "lang": "${idioma}" },
   "topic": "${sala ? 'Tópico con tono de juego o de cuento (máx. 4 palabras)' : 'Tópico generativo corto y llamativo (máx. 6 palabras)'}",
   "throughlines": [ "Pregunta 1?", "Pregunta 2?", "Pregunta 3?", "Pregunta 4?" ],
   "understanding_goals": [
@@ -4147,11 +4189,13 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
         }
 
         // ---------- Secciones plegables del PUD (en el lateral) ----------
+        // 'titulos': cómo reconocer cada sección en PUDs guardados antes de que
+        // el render marcara data-seccion (en inglés o en castellano).
         const SECCIONES_PUD = [
-            { id: 'throughlines', titulo: 'THROUGHLINES' },
-            { id: 'topic', titulo: 'TOPIC' },
-            { id: 'metas', titulo: 'UNDERSTANDING GOALS' },
-            { id: 'desempenos', titulo: 'PERFORMANCES' }
+            { id: 'throughlines', titulos: ['THROUGHLINES', 'HILOS CONDUCTORES'] },
+            { id: 'topic', titulos: ['TOPIC', 'TÓPICO'] },
+            { id: 'metas', titulos: ['UNDERSTANDING GOALS', 'METAS DE COMPRENSIÓN'] },
+            { id: 'desempenos', titulos: ['PERFORMANCES', 'DESEMPEÑOS'] }
         ];
         // Por defecto quedan abiertas metas y desempeños.
         const SECCIONES_PLEGADAS_POR_DEFECTO = ['throughlines', 'topic'];
@@ -4376,15 +4420,24 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
                 || null;
         }
 
-        function tablaDeSeccion(raiz, titulo) {
+        // Sección del PUD por id (ver SECCIONES_PUD), en cualquier idioma.
+        function seccionDeTitulo(el) {
+            if (el.dataset.seccion) return el.dataset.seccion;
+            const texto = el.textContent.toUpperCase();
+            return SECCIONES_PUD.find(s => s.titulos.some(x => texto.includes(x)))?.id || null;
+        }
+
+        function tablaDeSeccion(raiz, id) {
             const encabezado = Array.from(raiz.querySelectorAll('.pud-section-title'))
-                .find(el => el.textContent.toUpperCase().includes(titulo));
+                .find(el => seccionDeTitulo(el) === id);
             const tabla = encabezado?.nextElementSibling;
             return tabla && tabla.tagName === 'TABLE' ? tabla : null;
         }
 
+        const RE_PROYECTO_FINAL = /^\s*(FINAL PROJECT|PROYECTO FINAL)\s*:\s*/i;
+
         function filasDesempenos(raiz) {
-            const tabla = tablaDeSeccion(raiz, 'PERFORMANCES');
+            const tabla = tablaDeSeccion(raiz, 'desempenos');
             return tabla ? Array.from(tabla.rows).slice(1) : []; // la primera fila es el encabezado
         }
 
@@ -4408,18 +4461,18 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
 
             // Títulos de sección con id, para plegarlos en el lateral.
             raiz.querySelectorAll('.pud-section-title').forEach(t => {
-                const sec = SECCIONES_PUD.find(x => t.textContent.toUpperCase().includes(x.titulo));
-                if (sec) t.dataset.seccion = sec.id;
+                const sec = seccionDeTitulo(t);
+                if (sec) t.dataset.seccion = sec;
             });
 
-            const tablaMetas = tablaDeSeccion(raiz, 'UNDERSTANDING GOALS');
+            const tablaMetas = tablaDeSeccion(raiz, 'metas');
             Array.from(tablaMetas?.rows || []).forEach((tr, i) => {
                 if (!tr.dataset.metaId) tr.dataset.metaId = 'm' + (i + 1);
             });
 
             let n = 0;
             filasDesempenos(raiz).forEach(tr => {
-                const esFinal = /FINAL PROJECT/i.test(tr.cells[0]?.textContent || '');
+                const esFinal = tr.dataset.desempenoId === 'pf' || RE_PROYECTO_FINAL.test(tr.cells[0]?.textContent || '');
                 if (!esFinal) n++;
                 if (!tr.dataset.desempenoId) tr.dataset.desempenoId = esFinal ? 'pf' : 'd' + n;
                 if (tr.cells[2]) tr.cells[2].classList.add('pud-desempeno-upt');
@@ -4454,8 +4507,8 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
             const raiz = raizPud();
             if (!raiz) return null;
 
-            const metas = Array.from(tablaDeSeccion(raiz, 'UNDERSTANDING GOALS')?.rows || [])
-                .map(tr => ({ id: tr.dataset.metaId, texto: textoLimpio(tr.cells[0]).replace(/^(UG\s*)?\d+\s*:\s*/i, '') }))
+            const metas = Array.from(tablaDeSeccion(raiz, 'metas')?.rows || [])
+                .map(tr => ({ id: tr.dataset.metaId, texto: textoLimpio(tr.cells[0]).replace(/^((UG|MC)\s*)?\d+\s*:\s*/i, '') }))
                 .filter(m => m.id && m.texto);
 
             const desempenos = filasDesempenos(raiz).map(tr => {
@@ -4465,7 +4518,7 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
                     id: tr.dataset.desempenoId,
                     tipo: esFinal ? 'sintesis' : tipoDesdeCodigo(codigo),
                     codigo,
-                    texto: textoLimpio(tr.cells[0]).replace(/^FINAL PROJECT:\s*/i, 'Proyecto final: ').replace(/\s*Assessment:.*$/i, '')
+                    texto: textoLimpio(tr.cells[0]).replace(RE_PROYECTO_FINAL, 'Proyecto final: ').replace(/\s*(Assessment|Evaluación):.*$/i, '')
                 };
             }).filter(d => d.id && d.texto);
 
@@ -4505,10 +4558,12 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
         function abrirMenuTipo(celda) {
             const menu = document.getElementById('pud-tipo-menu');
             celdaTipoActiva = celda;
+            // El código se escribe con la sigla del idioma del PUD (I/PF o GI/FP).
+            const sigla = ETIQUETAS_PUD[idiomaDelPud(window.pudActivoJson)].upt;
             menu.innerHTML = `<p>Tipo de este desempeño</p>
-                <button type="button" role="menuitem" data-codigo="E"><strong>E</strong>Exploración</button>
-                <button type="button" role="menuitem" data-codigo="I"><strong>I</strong>Investigación guiada</button>
-                <button type="button" role="menuitem" data-codigo="PF"><strong>PF</strong>Proyecto final de síntesis</button>`;
+                <button type="button" role="menuitem" data-codigo="${sigla.E}"><strong>${sigla.E}</strong>Exploración</button>
+                <button type="button" role="menuitem" data-codigo="${sigla.I}"><strong>${sigla.I}</strong>Investigación guiada</button>
+                <button type="button" role="menuitem" data-codigo="${sigla.PF}"><strong>${sigla.PF}</strong>Proyecto final de síntesis</button>`;
             const r = celda.getBoundingClientRect();
             menu.hidden = false;
             menu.style.top = Math.min(window.innerHeight - menu.offsetHeight - 8, r.bottom + 4) + 'px';
