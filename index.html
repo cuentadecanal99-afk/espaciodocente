@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espacio Docente | Austin Eco Bilingual School</title>
     <link rel="icon" type="image/jpeg" href="austin-eco-bilingual-school-campana-argentina.jpg">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#26343E">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Espacio Docente">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -87,6 +95,11 @@
         body[data-view="welcome"] .workspace-layout { display: none !important; }
 
         body[data-view="welcome"] #welcome-panel { display: flex; }
+
+        body[data-view="elegir"] .home-layout,
+        body[data-view="elegir"] .workspace-layout { display: none !important; }
+
+        body[data-view="elegir"] #plan-choice-panel { display: flex; }
 
         /* ---------- Flujo del PUD en 3 pasos (ver actualizarFlujoPud) ----------
            Estados de cada botón de paso (data-estado):
@@ -549,7 +562,8 @@
         /* ==========================================
            PANEL DE BIENVENIDA (POST-LOGIN)
            ========================================== */
-        #welcome-panel {
+        #welcome-panel,
+        #plan-choice-panel {
             display: none;
             align-items: center;
             justify-content: center;
@@ -604,6 +618,13 @@
             font-size: 0.72rem;
             color: #93A1A9;
             font-style: italic;
+        }
+
+        .plan-choice-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-bg);
         }
 
         .welcome-subtitle {
@@ -1287,18 +1308,6 @@
             border-radius: 10px;
         }
 
-        /* "Trabajar sin PUD": alternativa secundaria, no compite con los 3 pasos */
-        .home-action-group {
-            display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
-            gap: 6px; margin-top: 4px; font-size: 0.85rem; color: #5A6B75;
-        }
-        .btn-enlace {
-            background: none; border: none; padding: 4px 2px; cursor: pointer;
-            font: inherit; font-weight: 700; color: var(--petroleo-medio);
-            text-decoration: underline; text-underline-offset: 3px;
-        }
-        .btn-enlace:hover { color: var(--primary-bg); }
-
 
         /* ==========================================
            2. LAYOUT MESA DE TRABAJO (WORKSPACE)
@@ -1853,7 +1862,7 @@
             <span class="welcome-edit-hint">✎ podés editar tu nombre</span>
             <p class="welcome-subtitle">Elegí una herramienta para comenzar a trabajar.</p>
             <div class="welcome-grid">
-                <button class="welcome-tile" type="button" onclick="irAMesaDeTrabajo()">
+                <button class="welcome-tile" type="button" onclick="irAElegirPlanificacion()">
                     <span class="welcome-tile-icon"><svg class="ico" aria-hidden="true"><use href="#ico-planificacion"></use></svg></span>
                     <span class="welcome-tile-title">Planificación</span>
                     <span class="welcome-tile-desc">PUDs inteligentes, prompts automáticos — creá y gestioná tus planificaciones didácticas.</span>
@@ -1914,6 +1923,26 @@
                         <table class="reservas-table" id="reservas-table"></table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planificación: antes de entrar, elegir si se trabaja con un PUD o directo en las herramientas -->
+    <div id="plan-choice-panel">
+        <div class="welcome-card">
+            <h2 class="plan-choice-title">¿Cómo querés trabajar?</h2>
+            <p class="welcome-subtitle">Elegí si vas a partir de una unidad didáctica o usar las herramientas sueltas.</p>
+            <div class="welcome-grid">
+                <button class="welcome-tile" type="button" onclick="irAMesaDeTrabajo()">
+                    <span class="welcome-tile-icon"><svg class="ico" aria-hidden="true"><use href="#ico-pud"></use></svg></span>
+                    <span class="welcome-tile-title">Trabajar con un PUD</span>
+                    <span class="welcome-tile-desc">Generá un PUD nuevo con tu IA o abrí uno guardado en tu historial.</span>
+                </button>
+                <button class="welcome-tile" type="button" onclick="iniciarFlujo('libre')">
+                    <span class="welcome-tile-icon"><svg class="ico" aria-hidden="true"><use href="#ico-tareas"></use></svg></span>
+                    <span class="welcome-tile-title">Trabajar sin PUD</span>
+                    <span class="welcome-tile-desc">Andá directo a las herramientas (secuencias, tareas, rúbricas, adaptaciones) sin armar una unidad.</span>
+                </button>
             </div>
         </div>
     </div>
@@ -2044,11 +2073,6 @@
                     <p style="margin:2px 0 0 0; font-size:0.85rem; color:var(--petroleo-medio);">La respuesta de tu IA se cargó bien. Revisala y editala en la mesa de trabajo.</p>
                 </div>
                 <button class="btn-primary" onclick="entrarAMesaDeTrabajo()">Abrir mesa de trabajo</button>
-            </div>
-
-            <div id="home-view" class="home-action-group">
-                <span>¿Solo querés usar las herramientas?</span>
-                <button type="button" class="btn-enlace" onclick="iniciarFlujo('libre')">Trabajar sin PUD</button>
             </div>
         </section>
 
@@ -2589,7 +2613,8 @@
             const vista = document.body.getAttribute('data-view');
             const libre = document.body.getAttribute('data-mode') === 'libre';
             const migas = [{ texto: 'Inicio', ir: () => salirDeMesa(irABienvenida) }];
-            if (vista === 'home' || vista === 'workspace') migas.push({ texto: 'Planificación', ir: () => salirDeMesa(volverAlHome) });
+            if (vista === 'elegir' || vista === 'home' || vista === 'workspace') migas.push({ texto: 'Planificación', ir: () => salirDeMesa(volverAElegirPlanificacion) });
+            if (vista === 'home' || (vista === 'workspace' && !libre)) migas.push({ texto: 'Generador de PUD', ir: () => salirDeMesa(volverAlHome) });
             if (vista === 'workspace') migas.push({ texto: libre ? 'Herramientas sin PUD' : 'Mesa de trabajo' });
 
             nav.replaceChildren(...migas.flatMap((m, i) => {
@@ -2607,6 +2632,43 @@
             }));
         }
         new MutationObserver(actualizarMigas).observe(document.body, { attributes: true, attributeFilter: ['data-view', 'data-mode'] });
+
+        // ---------- Botón Atrás/Adelante del navegador ----------
+        // Cada cambio de vista deja una entrada en el historial; al volver con
+        // el navegador se navega a esa vista en lugar de salir del sistema.
+        function estadoVistaActual() {
+            const vista = document.body.getAttribute('data-view');
+            const libre = vista === 'workspace' && document.body.getAttribute('data-mode') === 'libre';
+            return { vista, libre };
+        }
+        const mismaVista = (a, b) => !!a && !!b && a.vista === b.vista && !!a.libre === !!b.libre;
+
+        function registrarVistaEnHistorial() {
+            const actual = estadoVistaActual();
+            if (mismaVista(history.state, actual)) return; // vino de Atrás/Adelante
+            // El login (gate -> bienvenida) y el cierre de sesión reemplazan la entrada: no se vuelve a ellos.
+            if (!history.state || actual.vista === 'gate' || history.state.vista === 'gate') history.replaceState(actual, '');
+            else history.pushState(actual, '');
+        }
+        new MutationObserver(registrarVistaEnHistorial).observe(document.body, { attributes: true, attributeFilter: ['data-view', 'data-mode'] });
+        registrarVistaEnHistorial();
+
+        window.addEventListener('popstate', async (e) => {
+            const destino = e.state;
+            const actual = estadoVistaActual();
+            if (actual.vista === 'gate') return; // sin sesión no hay a dónde navegar
+
+            const ir = {
+                welcome: irABienvenida,
+                elegir: volverAElegirPlanificacion,
+                home: volverAlHome,
+                workspace: destino?.libre ? () => iniciarFlujo('libre') : null // la mesa con PUD se reabre desde el generador
+            }[destino?.vista];
+
+            if (ir) await salirDeMesa(ir);
+            // Si se canceló la salida o no hay a dónde ir, el historial vuelve a reflejar la vista que quedó.
+            if (!mismaVista(history.state, estadoVistaActual())) history.pushState(estadoVistaActual(), '');
+        });
 
         // ---------- Flujo del PUD en 3 pasos ----------
         // 1. Completar datos  ->  2. Generar y copiar el prompt  ->  3. Pegar la respuesta de la IA.
@@ -2737,6 +2799,19 @@
             document.body.removeAttribute('data-mode');
             document.body.setAttribute('data-view', 'welcome');
             actualizarMigas();
+        }
+
+        // Pantalla previa de Planificación: con PUD (generador/historial) o directo a las herramientas.
+        function irAElegirPlanificacion() {
+            document.body.removeAttribute('data-mode');
+            document.body.setAttribute('data-view', 'elegir');
+            actualizarMigas();
+        }
+
+        // Desde el generador o la mesa: cierra lo que haya abierto y vuelve a la elección.
+        function volverAElegirPlanificacion() {
+            volverAlHome();
+            irAElegirPlanificacion();
         }
 
         function irAMesaDeTrabajo() {
@@ -3523,9 +3598,6 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
         }
 
         function volverAlHome() {
-            const homeView = document.getElementById('home-view');
-            if (homeView) homeView.style.display = '';
-
             document.body.setAttribute('data-view', 'home');
             document.body.removeAttribute('data-mode');
             actualizarMigas();
@@ -4481,9 +4553,6 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
                 return;
             }
 
-            const homeView = document.getElementById('home-view');
-            if (homeView) homeView.style.display = 'none';
-
             document.body.setAttribute('data-mode', 'libre');
             actualizarMigas();
             document.body.setAttribute('data-view', 'workspace');
@@ -4491,5 +4560,34 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
             programarPudChanged(); // sin PUD: las herramientas reciben null
         }
     </script>
+<!-- PWA: registro del service worker + aviso de instalación en iPhone/iPad -->
+<div id="pwa-ios-aviso" style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#26343E;color:#fff;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:14px;line-height:1.4;padding:12px 40px 12px 14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.25);">
+    <strong>Instalá Espacio Docente:</strong> tocá <span aria-label="Compartir">Compartir</span> &rarr; <em>Agregar a pantalla de inicio</em>.
+    <button type="button" id="pwa-ios-cerrar" aria-label="Cerrar" style="position:absolute;top:6px;right:8px;background:none;border:0;color:#fff;font-size:20px;line-height:1;cursor:pointer;">&times;</button>
+</div>
+<script>
+(function () {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js').catch(function (err) {
+                console.warn('[PWA] No se pudo registrar el service worker:', err);
+            });
+        });
+    }
+    var ua = navigator.userAgent || '';
+    var esIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var instalada = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    var cerrado = false;
+    try { cerrado = localStorage.getItem('pwaIosAvisoCerrado') === '1'; } catch (e) {}
+    if (esIOS && !instalada && !cerrado) {
+        var aviso = document.getElementById('pwa-ios-aviso');
+        aviso.style.display = 'block';
+        document.getElementById('pwa-ios-cerrar').addEventListener('click', function () {
+            aviso.style.display = 'none';
+            try { localStorage.setItem('pwaIosAvisoCerrado', '1'); } catch (e) {}
+        });
+    }
+})();
+</script>
 </body>
 </html>

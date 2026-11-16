@@ -9,3 +9,12 @@
   Strict-Transport-Security: max-age=31536000
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'
+
+# PWA: el service worker y el manifest siempre se revalidan,
+# así las actualizaciones llegan sin quedar trabadas en caché.
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+/manifest.json
+  Cache-Control: no-cache
+  Content-Type: application/manifest+json
