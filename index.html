@@ -3910,7 +3910,8 @@ El 'description' es un párrafo breve: qué se hace, con qué, y qué se puede o
               montar: panel => montarIframe(panel, 'generador-tareas.html', 'Generador de tareas') },
             { id: 'rubrica', nombre: 'Rúbrica', icono: 'rubrica', habilitada: true, ubicacion: 'pestaña',
               montar: panel => montarIframe(panel, 'rubrica.html', 'Generador de rúbricas') },
-            { id: 'adaptaciones', nombre: 'Adaptaciones', icono: 'adaptaciones', habilitada: false, etiqueta: 'Pronto', ubicacion: 'pestaña' }
+            { id: 'adaptaciones', nombre: 'Adaptaciones', icono: 'adaptaciones', habilitada: true, ubicacion: 'pestaña',
+              montar: panel => montarIframe(panel, 'adaptaciones.html', 'Generador de adaptaciones') }
         ];
 
         const workspace = {

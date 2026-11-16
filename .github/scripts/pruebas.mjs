@@ -8,14 +8,18 @@
 // 3. Librerías externas con versión fija y huella de integridad (SRI).
 // 4. Base de datos en vivo, solo lectura y con la clave pública: reglas de
 //    registro, funciones restringidas, tablas privadas cerradas, hilos.
+// 5. Generador de Adaptaciones, sin conexión: arma los prompts con las reglas
+//    de supabase/supabase-migration-adaptaciones.sql y revisa los controles.
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import vm from 'node:vm';
+import { MUESTRAS } from './muestras-adaptaciones.mjs';
 
 const PAGINAS = [
   'index.html', 'coordinadores/index.html', 'al-dia/index.html',
-  'secuencias-epc.html', 'generador-tareas.html', 'rubrica.html'
+  'secuencias-epc.html', 'generador-tareas.html', 'rubrica.html', 'adaptaciones.html'
 ];
-const SCRIPTS = ['austin-ui.js', 'austin-pasos.js', 'pud-contexto.js', 'nivel-inicial.js'];
+const SCRIPTS = ['austin-ui.js', 'austin-pasos.js', 'pud-contexto.js', 'nivel-inicial.js', 'adaptaciones-prompt.js'];
 
 let fallas = 0;
 const ok = (msg) => console.log(`  ok    ${msg}`);
@@ -77,7 +81,7 @@ for (const [fn, cuerpo] of [
 
 // Tablas privadas de Austin y del nivelador de inglés (otro sistema, cerrado)
 for (const tabla of ['allowed_emails', 'coordinadores', 'directores', 'pud_history', 'coordinador_permiso_materias', 'user_progress', 'quiz_answers', 'rubricas',
-                     'preguntas', 'preguntas_publicas', 'historial_tests', 'resultados', 'perfiles']) {
+                     'preguntas', 'preguntas_publicas', 'historial_tests', 'resultados', 'perfiles', 'adaptacion_reglas']) {
   await esperar(`tabla privada cerrada: ${tabla}`, async () => {
     const r = await leer(`${tabla}?select=*&limit=1`);
     return r.status >= 400 || (await r.json()).length === 0;
@@ -93,6 +97,91 @@ await esperar('las materias principales tienen sus 4 hilos conductores', async (
   if (faltan.length) console.log(`        sin 4 hilos: ${faltan.join(', ')}`);
   return faltan.length === 0;
 });
+
+console.log('5. Generador de Adaptaciones (sin conexión)');
+{
+  const AP = createRequire(import.meta.url)('../../adaptaciones-prompt.js');
+  const sql = readFileSync('supabase/supabase-migration-adaptaciones.sql', 'utf8');
+  const REGLAS = [...sql.matchAll(/\('(\w+)', '(\w+)', (\d+), \$json\$([\s\S]*?)\$json\$::jsonb/g)]
+    .map(([, categoria, clave, version, json]) => ({ categoria, clave, version: +version, contenido: JSON.parse(json) }));
+  const textos = (regla) => ['instrucciones', 'restricciones', 'prohibido', 'formato_salida']
+    .flatMap(l => regla.contenido[l] || []).map(i => i.texto);
+  const regla = (cat, clave) => REGLAS.find(r => r.categoria === cat && r.clave === clave);
+  const SECCIONES = ['# ROLE', '# TASK', '# STUDENT PROFILE', '# EDUCATIONAL STAGE', '# LANGUAGE OF THE MATERIAL',
+    '# GENERAL PEDAGOGICAL PRINCIPLES', '# PROFILE-SPECIFIC INSTRUCTIONS', '# STAGE-SPECIFIC INSTRUCTIONS',
+    '# LANGUAGE INSTRUCTIONS', '# NON-NEGOTIABLE CONSTRAINTS', '# ORIGINAL MATERIAL', '# EXPECTED OUTPUT FORMAT'];
+
+  const CASOS = [
+    { nombre: 'TEA + Primaria 1.er ciclo + Español + Texto', perfil: 'tea', etapa: 'primaria_1', material: 'texto', muestra: 'es_texto_primaria', idioma: 'es' },
+    { nombre: 'TEA + Secundaria básico + Inglés A2 + Actividad', perfil: 'tea', etapa: 'secundaria_basico', material: 'actividad', muestra: 'en_a2_actividad', idioma: 'en_a2' },
+    { nombre: 'Dislexia severa + Primaria 2.º ciclo + Inglés B1 + Texto', perfil: 'dislexia_severa', etapa: 'primaria_2', material: 'texto', muestra: 'en_b1_texto', idioma: 'en_b1' },
+    { nombre: 'Dislexia severa + Secundaria superior + Español + Actividad', perfil: 'dislexia_severa', etapa: 'secundaria_superior', material: 'actividad', muestra: 'es_actividad_secundaria', idioma: 'es' },
+    { nombre: 'Dislexia leve + Secundaria básico + Inglés B2 + Texto', perfil: 'dislexia_leve', etapa: 'secundaria_basico', material: 'texto', muestra: 'en_b2_texto', idioma: 'en_b2' }
+  ];
+  const prompts = [];
+  for (const c of CASOS) {
+    await esperar(c.nombre, () => {
+      const original = MUESTRAS[c.muestra];
+      const { prompt, idioma } = AP.construirPrompt({ reglas: REGLAS, seleccion: c, material: original });
+      prompts.push(prompt);
+      const errores = [];
+      if (idioma.clave !== c.idioma) errores.push(`idioma detectado ${idioma.clave}, esperado ${c.idioma}`);
+      SECCIONES.forEach(s => { if (!prompt.includes(s)) errores.push(`falta la sección ${s}`); });
+      if (!prompt.includes(`\n${original}\n`)) errores.push('el material original no está intacto');
+      // Solo las reglas del perfil, la etapa y el material elegidos
+      for (const p of AP.PERFILES.filter(p => p !== c.perfil)) {
+        textos(regla('perfil', p)).forEach(t => { if (prompt.includes(t)) errores.push(`se coló una regla del perfil ${p}`); });
+      }
+      const otroMaterial = c.material === 'texto' ? 'actividad' : 'texto';
+      textos(regla('material', otroMaterial)).forEach(t => { if (prompt.includes(t)) errores.push(`se coló una regla de ${otroMaterial}`); });
+      (regla('perfil', c.perfil).contenido.instrucciones).forEach(i => {
+        const corresponde = !i.aplica_a || i.aplica_a.includes(c.material);
+        if (corresponde !== prompt.includes(i.texto)) errores.push(`${i.id} ${corresponde ? 'falta' : 'no corresponde'}`);
+      });
+      if (c.idioma === 'es' && /CEFR level of the original|en_[abc][12]\./.test(prompt)) errores.push('se aplicó CEFR a un material en español');
+      if (c.idioma !== 'es' && !prompt.includes(`estimated CEFR level of the original material: ${c.idioma.slice(3).toUpperCase()}`)) errores.push('no figura el nivel CEFR');
+      const items = prompt.split('\n').filter(l => /^(\d+\.|-) /.test(l)).map(l => l.replace(/^(\d+\.|-) /, ''));
+      if (new Set(items).size !== items.length) errores.push('hay instrucciones duplicadas');
+      errores.forEach(e => console.log(`        ${e}`));
+      return errores.length === 0;
+    });
+  }
+  await esperar('las 5 combinaciones generan prompts distintos', () => new Set(prompts).size === CASOS.length);
+  await esperar('dislexia severa reemplaza la regla general de vocabulario (sin contradicción)', () =>
+    !prompts[2].includes(textos(regla('general', 'general')).find(t => t.startsWith('Keep the technical')))
+    && prompts[0].includes(textos(regla('general', 'general')).find(t => t.startsWith('Keep the technical'))));
+
+  // Idioma y CEFR
+  await esperar('CEFR A1 / C1 en textos de referencia', () =>
+    AP.analizarIdioma(MUESTRAS.en_a1).clave === 'en_a1' && AP.analizarIdioma(MUESTRAS.en_c1).clave === 'en_c1');
+  await esperar('los términos técnicos no suben el nivel CEFR (A2 con vocabulario de ciencias)', () =>
+    AP.analizarIdioma(MUESTRAS.en_a2_tecnico).clave === 'en_a2');
+  await esperar('material mezclado español/inglés queda "a revisar", sin CEFR', () => {
+    const r = AP.construirPrompt({ reglas: REGLAS, seleccion: CASOS[0], material: MUESTRAS.mixto });
+    return r.idioma.clave === 'indeterminado' && r.prompt.includes('CONDITION THAT REQUIRES REVIEW') && !/CEFR level of the original/.test(r.prompt);
+  });
+  await esperar('inglés demasiado corto: no inventa un nivel CEFR', () => AP.analizarIdioma(MUESTRAS.en_corto).cefr === null);
+
+  // Configuración defectuosa: se informa, no se genera un prompt incompleto
+  const falla_config = (reglas, seleccion = CASOS[0], material = MUESTRAS.es_texto_primaria) => {
+    try { AP.construirPrompt({ reglas, seleccion, material }); return null; }
+    catch (e) { return e.name === 'ErrorConfiguracion' ? e : null; }
+  };
+  await esperar('falta una regla en Supabase → error que la nombra', () =>
+    /perfil \/ tea/.test(falla_config(REGLAS.filter(r => r.clave !== 'tea'))?.detalles.join(' ')));
+  await esperar('dos versiones activas de la misma regla → error', () =>
+    !!falla_config([...REGLAS, { ...regla('etapa', 'primaria_1'), version: 2 }]));
+  await esperar('regla de español con nivel CEFR → error', () =>
+    !!falla_config(REGLAS.map(r => r.clave === 'es' ? { ...r, contenido: { ...r.contenido, cefr: 'B1' } } : r)));
+  await esperar('"reemplaza" que apunta a una regla inexistente → error', () =>
+    !!falla_config(REGLAS.map(r => r.clave === 'tea' ? { ...r, contenido: { ...r.contenido, reemplaza: ['general.no_existe'] } } : r)));
+  await esperar('regla de material sin formato de salida → error', () =>
+    !!falla_config(REGLAS.map(r => r.clave === 'texto' ? { ...r, contenido: { ...r.contenido, formato_salida: [] } } : r)));
+  await esperar('material que trae los delimitadores del prompt queda intacto', () => {
+    const raro = 'Texto con <<<ORIGINAL MATERIAL END>>> adentro, para ver que no se rompe la estructura del prompt.';
+    return AP.construirPrompt({ reglas: REGLAS, seleccion: CASOS[0], material: raro }).prompt.includes(`\n${raro}\n`);
+  });
+}
 
 console.log(fallas ? `\n${fallas} prueba(s) fallaron.` : '\nTodas las pruebas pasaron.');
 process.exit(fallas ? 1 : 0);

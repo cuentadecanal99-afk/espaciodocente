@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Adaptaciones | Austin Eco</title>
+    <link rel="icon" type="image/jpeg" href="austin-eco-bilingual-school-campana-argentina.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="austin-tokens.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--austin-fuente);
+            background: var(--austin-fondo);
+            color: var(--austin-texto);
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 860px;
+            background: var(--austin-superficie);
+            border-radius: 10px;
+            border-top: 4px solid var(--austin-lima);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 24px;
+        }
+
+        header { border-bottom: 1px solid var(--austin-borde); margin-bottom: 22px; padding-bottom: 14px; }
+        header h1 { color: var(--austin-petroleo); font-size: 1.3rem; font-weight: 800; }
+        header p { color: var(--austin-texto-suave); font-size: 0.8rem; margin-top: 4px; line-height: 1.5; }
+
+        fieldset { border: none; margin-bottom: 20px; }
+        legend, .campo-label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.72rem;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: var(--austin-petroleo);
+            margin-bottom: 8px;
+        }
+
+        .opciones { display: grid; gap: 8px; }
+        .opciones.col-3 { grid-template-columns: repeat(3, 1fr); }
+        .opciones.col-2 { grid-template-columns: repeat(2, 1fr); }
+        .opciones.col-5 { grid-template-columns: repeat(5, 1fr); }
+
+        .opcion {
+            display: flex; align-items: flex-start; gap: 8px;
+            border: 1px solid var(--austin-borde); border-radius: 8px;
+            padding: 10px 12px; background: var(--austin-fondo);
+            cursor: pointer; transition: border-color .15s, background .15s, transform .15s;
+        }
+        .opcion:hover { border-color: var(--austin-petroleo); transform: translateY(-1px); }
+        .opcion:has(input:checked) {
+            border-color: var(--austin-petroleo);
+            background: var(--austin-azul-claro);
+            box-shadow: 0 0 0 1px rgba(38, 52, 62, 0.12);
+        }
+        .opcion input { margin-top: 3px; accent-color: var(--austin-petroleo); flex-shrink: 0; cursor: pointer; }
+        .opcion .nombre { display: block; font-weight: 700; font-size: 0.85rem; line-height: 1.3; }
+        .opcion .detalle { display: block; font-size: 0.72rem; color: var(--austin-texto-suave); margin-top: 2px; line-height: 1.35; }
+
+        .ayuda { font-size: 0.78rem; color: var(--austin-texto-suave); margin-top: 6px; line-height: 1.45; }
+
+        textarea {
+            width: 100%;
+            border: 2px solid var(--austin-borde);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 0.92rem;
+            font-family: inherit;
+            color: var(--austin-texto);
+            resize: vertical;
+            line-height: 1.6;
+            transition: border-color 0.15s;
+        }
+        textarea:focus { outline: none; border-color: var(--austin-petroleo); }
+        #f-material { min-height: 220px; }
+
+        #btn-generar { margin-top: 18px; }
+
+        .aviso-config {
+            margin-top: 14px; padding: 12px 14px; border-radius: 8px;
+            background: var(--austin-error-claro); color: var(--austin-error);
+            font-size: 0.85rem; line-height: 1.5;
+        }
+        .aviso-config ul { margin: 6px 0 0 18px; }
+
+        /* Resultado */
+        .resumen {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+        }
+        .chip {
+            font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+            background: var(--austin-azul-claro); color: var(--austin-petroleo);
+        }
+        .chip.revisar { background: var(--austin-naranja-claro); color: #9A4A0E; }
+        .nota-revision {
+            margin-bottom: 12px; padding: 10px 12px; border-radius: 8px;
+            background: var(--austin-naranja-claro); color: #7A3B0B; font-size: 0.82rem; line-height: 1.45;
+        }
+        #f-prompt {
+            min-height: 420px;
+            font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            background: var(--austin-fondo);
+        }
+        .acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .btn {
+            border: none; border-radius: 6px; padding: 12px 18px;
+            font: 700 0.9rem var(--austin-fuente); cursor: pointer; transition: background .2s;
+        }
+        .btn-primario { background: var(--austin-naranja); color: #fff; }
+        .btn-primario:hover { background: var(--austin-naranja-oscuro); }
+        .btn-secundario { background: #fff; color: var(--austin-petroleo); border: 1.5px solid var(--austin-petroleo); }
+        .btn-secundario:hover { background: var(--austin-azul-claro); }
+
+        @media (max-width: 860px) { .opciones.col-5 { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 620px) {
+            body { padding: 18px 12px; }
+            .container { padding: 18px; box-shadow: none; }
+            .opciones.col-3, .opciones.col-5 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 420px) {
+            .opciones.col-2, .opciones.col-3, .opciones.col-5 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Generador de Adaptaciones</h1>
+        <p>Arma un prompt completo para adaptar un texto o una actividad. Copialo y pegalo en tu IA (Claude, ChatGPT, Gemini…). &nbsp;|&nbsp; Austin Eco Bilingual School</p>
+    </header>
+
+    <!-- ===== Configuración ===== -->
+    <section id="vista-config">
+        <fieldset>
+            <legend>Perfil del estudiante</legend>
+            <div class="opciones col-3">
+                <label class="opcion"><input type="radio" name="perfil" value="tea"><span><span class="nombre">TEA</span></span></label>
+                <label class="opcion"><input type="radio" name="perfil" value="dislexia_severa"><span><span class="nombre">Dislexia severa</span></span></label>
+                <label class="opcion"><input type="radio" name="perfil" value="dislexia_leve"><span><span class="nombre">Dislexia leve</span></span></label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Etapa educativa</legend>
+            <div class="opciones col-5">
+                <label class="opcion"><input type="radio" name="etapa" value="inicial"><span><span class="nombre">Jardín</span><span class="detalle">Nivel inicial</span></span></label>
+                <label class="opcion"><input type="radio" name="etapa" value="primaria_1"><span><span class="nombre">Primaria – Primer ciclo</span><span class="detalle">1.º a 3.º grado</span></span></label>
+                <label class="opcion"><input type="radio" name="etapa" value="primaria_2"><span><span class="nombre">Primaria – Segundo ciclo</span><span class="detalle">4.º a 6.º grado</span></span></label>
+                <label class="opcion"><input type="radio" name="etapa" value="secundaria_basico"><span><span class="nombre">Secundaria</span><span class="detalle">Ciclo básico</span></span></label>
+                <label class="opcion"><input type="radio" name="etapa" value="secundaria_superior"><span><span class="nombre">Secundaria</span><span class="detalle">Ciclo superior</span></span></label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Tipo de material</legend>
+            <div class="opciones col-2">
+                <label class="opcion"><input type="radio" name="material" value="texto"><span><span class="nombre">Texto de estudio / lectura</span></span></label>
+                <label class="opcion"><input type="radio" name="material" value="actividad"><span><span class="nombre">Actividad / consigna / evaluación</span></span></label>
+            </div>
+            <p class="ayuda">Cada prompt adapta un solo tipo de material. Si necesitás adaptar el texto y la actividad, generá dos prompts.</p>
+        </fieldset>
+
+        <label class="campo-label" for="f-material">Material original</label>
+        <textarea id="f-material" placeholder="Pegá acá el texto o la actividad que querés adaptar, completo. El idioma (español o inglés) se detecta solo."></textarea>
+
+        <button type="button" class="paso-btn" id="btn-generar" data-estado="actual">
+            <span class="paso-num">✓</span>
+            <span class="paso-texto">Generar el prompt</span>
+        </button>
+        <div id="aviso-config" class="aviso-config" role="alert" hidden></div>
+    </section>
+
+    <!-- ===== Resultado ===== -->
+    <section id="vista-resultado" hidden>
+        <div class="resumen" id="resumen"></div>
+        <div class="nota-revision" id="nota-revision" hidden></div>
+        <label class="campo-label" for="f-prompt">Prompt listo para copiar (podés revisarlo y editarlo)</label>
+        <textarea id="f-prompt" spellcheck="false"></textarea>
+        <div class="acciones">
+            <button type="button" class="btn btn-primario" id="btn-copiar">Copiar prompt</button>
+            <button type="button" class="btn btn-secundario" id="btn-otro">Generar otro prompt</button>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js" integrity="sha384-dl/4LkSyQ4uEucc48NM6VDZLAjLLq9yMzZ5JLXumBq7Ld33XBof73hseOqPhO89+" crossorigin="anonymous"></script>
+<script src="austin-ui.js"></script>
+<script src="adaptaciones-prompt.js"></script>
+<script>
+(function () {
+    // Generador de Adaptaciones: arma un prompt para una IA externa (no llama
+    // a ninguna IA). Las reglas pedagógicas vienen de la tabla
+    // adaptacion_reglas (supabase/ADAPTACIONES.md); la sesión es la de
+    // Espacio Docente, que supabase-js lee del almacenamiento local porque el
+    // iframe es del mismo sitio.
+    var SUPABASE_URL = 'https://kretfnbddhbosacfgdup.supabase.co';
+    var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtyZXRmbmJkZGhib3NhY2ZnZHVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0Mjk3MTcsImV4cCI6MjA4NzAwNTcxN30.P0HLqGab3tB5WdsVGYKXEyK572JvthHYFg7iu3MJpgo';
+    var sb = window.supabase && window.supabase.createClient ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    var AP = window.AdaptacionesPrompt;
+
+    var NOMBRES = {
+        perfil: { tea: 'TEA', dislexia_severa: 'Dislexia severa', dislexia_leve: 'Dislexia leve' },
+        etapa: { inicial: 'Jardín', primaria_1: 'Primaria – 1.er ciclo', primaria_2: 'Primaria – 2.º ciclo',
+                 secundaria_basico: 'Secundaria – Ciclo básico', secundaria_superior: 'Secundaria – Ciclo superior' },
+        material: { texto: 'Texto de estudio', actividad: 'Actividad' }
+    };
+
+    var $ = function (id) { return document.getElementById(id); };
+    var elegido = function (nombre) {
+        var r = document.querySelector('input[name="' + nombre + '"]:checked');
+        return r ? r.value : '';
+    };
+
+    function mostrarErrorConfig(mensaje, detalles) {
+        var caja = $('aviso-config');
+        caja.innerHTML = '';
+        var p = document.createElement('strong');
+        p.textContent = mensaje;
+        caja.appendChild(p);
+        if (detalles && detalles.length) {
+            var ul = document.createElement('ul');
+            detalles.forEach(function (d) { var li = document.createElement('li'); li.textContent = d; ul.appendChild(li); });
+            caja.appendChild(ul);
+            var pie = document.createElement('p');
+            pie.style.marginTop = '6px';
+            pie.textContent = 'No se generó el prompt para no entregarlo incompleto. Avisale a coordinación.';
+            caja.appendChild(pie);
+        }
+        caja.hidden = false;
+    }
+
+    // Solo las 5 reglas que pide esta combinación (más nada).
+    async function traerReglas(seleccion, claveIdioma) {
+        var res = await sb.from('adaptacion_reglas')
+            .select('categoria,clave,version,contenido')
+            .eq('activa', true)
+            .in('clave', ['general', seleccion.perfil, seleccion.etapa, seleccion.material, claveIdioma]);
+        if (res.error) throw res.error;
+        return res.data || [];
+    }
+
+    async function generar() {
+        $('aviso-config').hidden = true;
+        var seleccion = { perfil: elegido('perfil'), etapa: elegido('etapa'), material: elegido('material') };
+        var material = $('f-material').value;
+        var faltan = [];
+        if (!seleccion.perfil) faltan.push('el perfil del estudiante');
+        if (!seleccion.etapa) faltan.push('la etapa educativa');
+        if (!seleccion.material) faltan.push('el tipo de material');
+        if (!material.trim()) faltan.push('el material original');
+        if (faltan.length) {
+            AustinUI.avisar('Falta completar ' + faltan.join(', ') + '.', { tipo: 'error' });
+            return;
+        }
+        if (!sb) { mostrarErrorConfig('No se pudo conectar con Supabase. Recargá la página.'); return; }
+
+        var btn = $('btn-generar');
+        btn.disabled = true;
+        btn.querySelector('.paso-texto').textContent = 'Armando el prompt…';
+        try {
+            var sesion = await sb.auth.getSession();
+            if (!sesion.data || !sesion.data.session) {
+                mostrarErrorConfig('Iniciá sesión en Espacio Docente para usar el generador.');
+                return;
+            }
+            var idioma = AP.analizarIdioma(material);
+            var reglas = await traerReglas(seleccion, idioma.clave);
+            var res = AP.construirPrompt({ reglas: reglas, seleccion: seleccion, material: material });
+            mostrarResultado(seleccion, res);
+        } catch (err) {
+            if (err && err.name === 'ErrorConfiguracion') {
+                mostrarErrorConfig(err.message, err.detalles);
+            } else {
+                console.error(err);
+                AustinUI.avisar('No se pudo generar el prompt.', { tipo: 'error', detalle: err });
+            }
+        } finally {
+            btn.disabled = false;
+            btn.querySelector('.paso-texto').textContent = 'Generar el prompt';
+        }
+    }
+
+    function chip(texto, clase) {
+        var s = document.createElement('span');
+        s.className = 'chip' + (clase ? ' ' + clase : '');
+        s.textContent = texto;
+        return s;
+    }
+
+    function mostrarResultado(seleccion, res) {
+        var resumen = $('resumen');
+        resumen.innerHTML = '';
+        resumen.appendChild(chip(NOMBRES.perfil[seleccion.perfil]));
+        resumen.appendChild(chip(NOMBRES.etapa[seleccion.etapa]));
+        resumen.appendChild(chip(NOMBRES.material[seleccion.material]));
+        var id = res.idioma;
+        if (id.idioma === 'es') resumen.appendChild(chip('Español'));
+        else if (id.idioma === 'en') resumen.appendChild(chip(id.cefr ? 'Inglés · nivel estimado ' + id.cefr : 'Inglés · nivel no estimado', id.cefr ? '' : 'revisar'));
+        else resumen.appendChild(chip('Idioma a revisar', 'revisar'));
+
+        var nota = $('nota-revision');
+        nota.hidden = !id.revision;
+        nota.textContent = id.revision ? id.revision + ' El prompt le pide a la IA que conserve el idioma de cada parte; revisá el resultado.' : '';
+
+        $('f-prompt').value = res.prompt;
+        $('vista-config').hidden = true;
+        $('vista-resultado').hidden = false;
+        window.scrollTo(0, 0);
+    }
+
+    async function copiar() {
+        var texto = $('f-prompt').value;
+        try {
+            await navigator.clipboard.writeText(texto);
+        } catch (e) {
+            $('f-prompt').select();
+            document.execCommand('copy');
+        }
+        AustinUI.avisar('Prompt copiado. Pegalo en tu IA.');
+    }
+
+    // Vuelve a la configuración. Se mantienen perfil y etapa (lo habitual es
+    // adaptar después el otro material del mismo alumno); se limpian el tipo
+    // de material y el texto.
+    function otro() {
+        document.querySelectorAll('input[name="material"]').forEach(function (r) { r.checked = false; });
+        $('f-material').value = '';
+        $('f-prompt').value = '';
+        $('vista-resultado').hidden = true;
+        $('vista-config').hidden = false;
+        window.scrollTo(0, 0);
+        $('f-material').focus();
+    }
+
+    $('btn-generar').addEventListener('click', generar);
+    $('btn-copiar').addEventListener('click', copiar);
+    $('btn-otro').addEventListener('click', otro);
+})();
+</script>
+</body>
+</html>
